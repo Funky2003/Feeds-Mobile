@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="background_color">#292F3F</color>
+    <color name="btn_blue_background">#03A9F1</color>
+    <color name="hint_grey_color">#808080</color>
+    <color name="sender_chat_bubble_background_color">#272A35</color>
+    <color name="receiver_chat_bubble_background_color">#373E4E</color>
+</resources>

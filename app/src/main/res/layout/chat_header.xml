@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_margin="8dp">
+
+        <!-- the profile avatar -->
+        <include layout="@layout/profile_avatar"
+            android:id="@+id/chat_header_username"
+        />
+
+    <TextView
+        android:id="@+id/header_username"
+        style="@style/TextAppearance.Material3.BodyLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/chat_header_username"
+        app:layout_constraintStart_toStartOf="@id/chat_header_username"
+        app:layout_constraintTop_toBottomOf="@id/chat_header_username"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
