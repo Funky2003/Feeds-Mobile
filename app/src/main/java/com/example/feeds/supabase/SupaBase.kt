@@ -3,18 +3,16 @@ package com.example.feeds.supabase
 import android.content.Intent
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.feeds.ChatScreen
-import com.example.feeds.MainActivity
 import com.example.feeds.R
 import com.example.feeds.adapters.ChatAdapter
 import com.example.feeds.constants.Secrets
 import com.example.feeds.dtos.LoginDTO
 import com.example.feeds.models.ChatModel
 import com.example.feeds.models.MessageModel
-import com.example.feeds.models.UserModel
+import com.example.feeds.dtos.SignupDTO
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.gotrue.auth
@@ -32,7 +30,7 @@ val supabase = createSupabaseClient(
     install(Postgrest)
     install(Auth)
 }
-class SupaBase : AppCompatActivity(){
+class SupaBase {
 
     fun handleDeepLink(intent: Intent) {
         supabase.handleDeeplinks(
@@ -46,14 +44,14 @@ class SupaBase : AppCompatActivity(){
 
 
     //<-- Create a new user -->
-    suspend fun newUser(user: UserModel) {
-
+    suspend fun newUser(view: View, user: SignupDTO) {
         println("THE USER DATA: ${user.getUsername()}, ${user.getEmail()}, ${user.getPassword()}, ${user.getConfirmPassword()}")
         val response = supabase.auth.signUpWith(Email){
             email = user.getEmail()
             password = user.getPassword()
         }
 
+        Toast.makeText(view.context, "Account created!\nConfirm your email 📧", Toast.LENGTH_LONG).show()
         println("USER ADDED SUCCESSFULLY: ${response?.confirmedAt}")
     }
 

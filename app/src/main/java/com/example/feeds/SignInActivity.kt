@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.feeds.dtos.LoginDTO
-import com.example.feeds.models.UserModel
 import com.example.feeds.supabase.SupaBase
 import kotlinx.coroutines.runBlocking
 
@@ -37,7 +36,8 @@ class SignInActivity : AppCompatActivity() {
     fun signInUser(view: View) {
         val email = findViewById<EditText>(R.id.login_email_editText)
         val password = findViewById<EditText>(R.id.login_password_editText)
-
+        val progressBar = findViewById<ProgressBar>(R.id.signin_progress_bar)
+        val signInButton = findViewById<Button>(R.id.log_in_button)
 
         val loginDTO = LoginDTO(
             email = email.text.toString(),
@@ -45,7 +45,7 @@ class SignInActivity : AppCompatActivity() {
         )
         val supaBase = SupaBase()
         runBlocking {
-            showProgressHideButton()
+            showProgressHideButton(progressBar = progressBar, button = signInButton)
 
             try {
                 supaBase.loginUser(view, loginDTO)
@@ -57,7 +57,7 @@ class SignInActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 Toast.makeText(view.context, "Invalid email or password", Toast.LENGTH_LONG).show()
 
-                hideProgressShowButton()
+                hideProgressShowButton(progressBar = progressBar, button = signInButton)
                 println("ERROR SIGNING IN: ${e.message}")
             }
         }
@@ -70,19 +70,13 @@ class SignInActivity : AppCompatActivity() {
         password.text.clear()
     }
 
-    private fun hideProgressShowButton() {
-        val progressBar = findViewById<ProgressBar>(R.id.signin_progress_bar)
-        val signInButton = findViewById<Button>(R.id.log_in_button)
-
-        signInButton.visibility = View.VISIBLE
+    fun hideProgressShowButton(progressBar: ProgressBar, button: Button) {
+        button.visibility = View.VISIBLE
         progressBar.visibility = View.INVISIBLE
     }
 
-    private fun showProgressHideButton() {
-        val progressBar = findViewById<ProgressBar>(R.id.signin_progress_bar)
-        val signInButton = findViewById<Button>(R.id.log_in_button)
-
-        signInButton.visibility = View.INVISIBLE
+    fun showProgressHideButton(progressBar: ProgressBar, button: Button) {
+        button.visibility = View.INVISIBLE
         progressBar.visibility = View.VISIBLE
     }
 }

@@ -1,9 +1,9 @@
-package com.example.feeds.models
+package com.example.feeds.dtos
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserModel(
+data class SignupDTO(
     private var username: String,
     private var email: String,
     private var password: String,
@@ -50,7 +50,7 @@ data class UserModel(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as UserModel
+        other as SignupDTO
 
         if (username != other.username) return false
         if (email != other.email) return false
