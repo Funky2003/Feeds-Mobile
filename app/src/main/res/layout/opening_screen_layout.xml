@@ -76,6 +76,7 @@
             android:layout_marginTop="15dp"
             android:backgroundTint="#00000000"
             android:text="@string/create_account"
+            android:onClick="goToSignUpScreen"
             app:layout_constraintTop_toBottomOf="@id/btnToSignIn"
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
