@@ -12,7 +12,7 @@ import com.example.feeds.models.ChatModel
 class ChatAdapter (private val mLIst: List<ChatModel>) : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.chat_bubble, parent, false)
+            .inflate(R.layout.chat_bubble_component, parent, false)
         return ChatViewHolder(view)
     }
 

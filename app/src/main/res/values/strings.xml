@@ -5,4 +5,18 @@
     <string name="now_your_comms_are_in_one_place_and_always_under_control"><![CDATA[Now your comms. are in one place and always under control]]></string>
     <string name="sign_in">Sign In</string>
     <string name="create_account">Create account</string>
+    <string name="username">username</string>
+    <string name="username_start_upper">Username</string>
+    <string name="email">email</string>
+    <string name="email_start_upper">Email</string>
+    <string name="password_start_upper">Password</string>
+    <string name="password">password</string>
+    <string name="confirm_password_start_upper">Confirm password</string>
+    <string name="repeat_password_hint">repeat password</string>
+    <string name="must_be_8_characters">must be 8 characters</string>
+    <string name="create_account_header">Create account</string>
+    <string name="create_button_text">Create</string>
+    <string name="black_star_icon">Black star icon</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="log_in">Log in</string>
 </resources>

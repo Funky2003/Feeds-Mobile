@@ -11,7 +11,7 @@
         android:orientation="vertical">
 
         <!--The search bar-->
-        <include layout="@layout/search_bar"/>
+        <include layout="@layout/search_bar_component"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"

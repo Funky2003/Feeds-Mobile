@@ -6,7 +6,7 @@
     android:layout_margin="8dp">
 
         <!-- the profile avatar -->
-        <include layout="@layout/profile_avatar"
+        <include layout="@layout/profile_avatar_component"
             android:id="@+id/chat_header_username"
         />
 
