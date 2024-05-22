@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -55,33 +57,32 @@
             app:layout_constraintEnd_toEndOf="@id/explore_the_app_txt"/>
 
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnToSignIn"
             android:layout_width="match_parent"
-            android:layout_height="65dp"
+            android:layout_height="50dp"
             android:layout_marginTop="100dp"
-            style="@style/Base.Widget.AppCompat.Button."
             android:text="@string/sign_in"
-            android:backgroundTint="@color/black"
+            android:background="@drawable/ripple_black_button_background"
             app:layout_constraintTop_toBottomOf="@id/now_your_comms_txt"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/btnToSignUp" />
+            app:layout_constraintBottom_toTopOf="@id/btnToSignUp"/>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnToSignUp"
-            style="@style/Base.Widget.AppCompat.Button."
             android:layout_width="match_parent"
-            android:layout_height="65dp"
+            android:layout_height="50dp"
             android:layout_marginTop="15dp"
-            android:backgroundTint="#00000000"
             android:text="@string/create_account"
-            android:onClick="goToSignUpScreen"
-            app:layout_constraintTop_toBottomOf="@id/btnToSignIn"
             android:textColor="@color/black"
+            android:onClick="goToSignUpScreen"
+            android:background="@drawable/ripple_white_button_background"
+            app:layout_constraintTop_toBottomOf="@id/btnToSignIn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:backgroundTint="@null"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</merge>
+</LinearLayout>
