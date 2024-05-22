@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/feeds_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="120dp"
+            android:layout_marginStart="26dp"
+            android:contentDescription="@string/feeds_icon"
+            android:src="@drawable/feeds_mobile_icon"
+            app:layout_constraintBottom_toTopOf="@id/explore_the_app_txt"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/explore_the_app_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:text="@string/explore_the_app"
+            android:textStyle="bold"
+            android:textSize="36sp"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/now_your_comms_txt"
+            app:layout_constraintTop_toBottomOf="@id/feeds_icon"
+            app:layout_constraintStart_toStartOf="@id/feeds_icon"
+            app:layout_constraintEnd_toEndOf="@id/feeds_icon"/>
+
+
+        <TextView
+            android:id="@+id/now_your_comms_txt"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:text="@string/now_your_comms_are_in_one_place_and_always_under_control"
+            android:textStyle="normal"
+            android:textSize="18sp"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/btnToSignIn"
+            app:layout_constraintTop_toBottomOf="@id/explore_the_app_txt"
+            app:layout_constraintStart_toStartOf="@id/explore_the_app_txt"
+            app:layout_constraintEnd_toEndOf="@id/explore_the_app_txt"/>
+
+
+        <Button
+            android:id="@+id/btnToSignIn"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginTop="100dp"
+            style="@style/Base.Widget.AppCompat.Button."
+            android:text="@string/sign_in"
+            android:backgroundTint="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/now_your_comms_txt"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/btnToSignUp" />
+
+        <Button
+            android:id="@+id/btnToSignUp"
+            style="@style/Base.Widget.AppCompat.Button."
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginTop="15dp"
+            android:backgroundTint="#00000000"
+            android:text="@string/create_account"
+            app:layout_constraintTop_toBottomOf="@id/btnToSignIn"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</merge>

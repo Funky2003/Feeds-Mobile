@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Feeds</string>
+    <string name="feeds_icon">Feeds icon</string>
+    <string name="explore_the_app">Explore the app</string>
+    <string name="now_your_comms_are_in_one_place_and_always_under_control"><![CDATA[Now your comms. are in one place and always under control]]></string>
+    <string name="sign_in">Sign In</string>
+    <string name="create_account">Create account</string>
 </resources>

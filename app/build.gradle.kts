@@ -40,8 +40,12 @@ dependencies {
 
     // supabase implementation
     implementation(platform("io.github.jan-tennert.supabase:bom:2.4.2"))
-    implementation("io.github.jan-tennert.supabase:postgrest-kt")
-    implementation("io.ktor:ktor-client-android:2.3.11")
+    implementation("io.github.jan-tennert.supabase:postgrest-kt:2.4.2")
+    implementation("io.github.jan-tennert.supabase:storage-kt:2.4.2")
+    implementation("io.github.jan-tennert.supabase:gotrue-kt:2.4.2")
+    implementation("io.ktor:ktor-client-android:2.3.9")
+    implementation("io.ktor:ktor-client-core:2.3.11")
+    implementation("io.ktor:ktor-utils:2.2.3")
 
     //noinspection UseTomlInstead
     implementation("de.hdodenhof:circleimageview:3.1.0")
