@@ -19,4 +19,8 @@
     <string name="black_star_icon">Black star icon</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="log_in">Log in</string>
+    <string name="email_address">Email address</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="sign_up">Sign up</string>
+    <string name="hi_welcome">Hi, Welcome!👋</string>
 </resources>

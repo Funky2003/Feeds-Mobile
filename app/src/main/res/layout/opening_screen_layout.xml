@@ -63,6 +63,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="100dp"
             android:text="@string/sign_in"
+            android:onClick="goToSignInScreen"
             android:background="@drawable/ripple_black_button_background"
             app:layout_constraintTop_toBottomOf="@id/now_your_comms_txt"
             app:layout_constraintStart_toStartOf="parent"

@@ -6,7 +6,7 @@
     android:scrollbars="none"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SignUpActivity">
+    tools:context=".SignInActivity">
 
-    <include layout="@layout/sign_up_activity_layout"/>
+    <include layout="@layout/sign_in_activity_layout"/>
 </ScrollView>

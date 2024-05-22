@@ -184,6 +184,7 @@
                     android:paddingEnd="14dp"
                     android:paddingBottom="14dp"
                     android:text="@string/log_in"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:onClick="goToSignInScreen"/>
         </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
