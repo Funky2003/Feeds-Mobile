@@ -7,7 +7,7 @@ data class UserModel(
     private var username: String,
     private var email: String,
     private var password: String,
-    private var phone: String
+    private var confirmPassword: String
 ) {
 //    constructor() : this("", "", "")
     fun getUsername() : String {
@@ -22,8 +22,8 @@ data class UserModel(
         return this.password
     }
 
-    fun getPhone() : String {
-        return this.phone
+    fun getConfirmPassword() : String {
+        return this.confirmPassword
     }
 
     fun setUsername(username: String) {
@@ -38,12 +38,12 @@ data class UserModel(
         this.password = password
     }
 
-    fun setPhone(phone: String) {
-        this.phone = phone
+    fun setConfirmPassword(confirmPassword: String) {
+        this.confirmPassword = confirmPassword
     }
 
     override fun toString(): String {
-        return "UserModel(username='$username', email='$email', password='$password', phone='$phone')"
+        return "UserModel(username='$username', email='$email', password='$password', phone='$confirmPassword')"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -55,7 +55,7 @@ data class UserModel(
         if (username != other.username) return false
         if (email != other.email) return false
         if (password != other.password) return false
-        if (phone != other.phone) return false
+        if (confirmPassword != other.confirmPassword) return false
 
         return true
     }
@@ -64,7 +64,7 @@ data class UserModel(
         var result = username.hashCode()
         result = 31 * result + email.hashCode()
         result = 31 * result + password.hashCode()
-        result = 31 * result + phone.hashCode()
+        result = 31 * result + confirmPassword.hashCode()
         return result
     }
 }

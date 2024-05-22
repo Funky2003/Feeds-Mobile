@@ -1,12 +1,17 @@
 package com.example.feeds.supabase
 
 import android.content.Intent
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.feeds.ChatScreen
+import com.example.feeds.MainActivity
 import com.example.feeds.R
-import com.example.feeds.constants.Secrets
 import com.example.feeds.adapters.ChatAdapter
+import com.example.feeds.constants.Secrets
+import com.example.feeds.dtos.LoginDTO
 import com.example.feeds.models.ChatModel
 import com.example.feeds.models.MessageModel
 import com.example.feeds.models.UserModel
@@ -27,7 +32,7 @@ val supabase = createSupabaseClient(
     install(Postgrest)
     install(Auth)
 }
-class SupaBase{
+class SupaBase : AppCompatActivity(){
 
     fun handleDeepLink(intent: Intent) {
         supabase.handleDeeplinks(
@@ -39,26 +44,17 @@ class SupaBase{
         )
     }
 
-    fun addNewUser() {
-        runBlocking {
-            try {
-                val user =  newUser()
-                println("\n\nTHE NEW USER: $user\n\n")
 
-            } catch (e: Exception) {
-                println("AN ERROR OCCURRED: $e")
-            }
-        }
-    }
+    //<-- Create a new user -->
+    suspend fun newUser(user: UserModel) {
 
-    private val user = UserModel("funky101", "nusetorsetsofia101@gmail.com", "password", "0555159963")
-    private suspend fun newUser() {
+        println("THE USER DATA: ${user.getUsername()}, ${user.getEmail()}, ${user.getPassword()}, ${user.getConfirmPassword()}")
         val response = supabase.auth.signUpWith(Email){
             email = user.getEmail()
             password = user.getPassword()
         }
 
-        println("USER ADDED SUCCESSFULLY: $response")
+        println("USER ADDED SUCCESSFULLY: ${response?.confirmedAt}")
     }
 
     private suspend fun addUserName(id: String, username: String) {
@@ -68,6 +64,16 @@ class SupaBase{
                 username
             ))
             .decodeList<String>()
+    }
+
+    //<-- Login user -->
+    suspend fun loginUser(view: View, loginDTO: LoginDTO) {
+        supabase.auth.signInWith(Email) {
+            email = loginDTO.getEmail()
+            password = loginDTO.getPassword()
+        }
+
+        Toast.makeText(view.context, "Login successful!", Toast.LENGTH_LONG).show()
     }
 
     private suspend fun showMessages() : List<MessageModel> {

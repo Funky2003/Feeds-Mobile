@@ -27,9 +27,6 @@ class ChatScreen : AppCompatActivity() {
 
         // call the recycler
         supaBase.setRecyclerView(this)
-
-        // add new user
-        supaBase.addNewUser()
     }
 
     private fun setUsernameAndAvatar() {

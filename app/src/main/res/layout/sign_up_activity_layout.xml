@@ -142,12 +142,25 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/create_account_button"/>
 
+        <ProgressBar
+            android:id="@+id/signup_progress_bar"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/ripple_black_button_background"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/create_account_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/create_account_button" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/create_account_button"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="100dp"
             android:text="@string/create_button_text"
+            android:visibility="visible"
+            android:onClick="addNewUser"
             android:background="@drawable/ripple_black_button_background"
             app:layout_constraintTop_toBottomOf="@id/confirm_password_editText"
             app:layout_constraintStart_toStartOf="parent"
