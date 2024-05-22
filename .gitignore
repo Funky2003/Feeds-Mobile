@@ -15,3 +15,4 @@
 local.properties
 app/src/main/java/com/example/feeds/Secrets.kt
 .env
+/app/src/main/java/com/example/feeds/constants/Secrets.kt
