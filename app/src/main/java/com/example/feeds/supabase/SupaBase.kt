@@ -14,6 +14,7 @@ import com.example.feeds.dtos.ProfileDTO
 import com.example.feeds.dtos.SignupDTO
 import com.example.feeds.models.ChatModel
 import com.example.feeds.models.MessageModel
+import com.example.feeds.sharedpreferences.SharedPreferences
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.gotrue.auth
@@ -34,6 +35,7 @@ val supabase = createSupabaseClient(
 }
 class SupaBase {
 
+    private val sharedPreferences = SharedPreferences()
     lateinit var callback: (String, String) -> Unit
     fun handleDeepLink(intent: Intent) {
             supabase.handleDeeplinks(intent = intent, onSessionSuccess = {
@@ -83,7 +85,9 @@ class SupaBase {
             password = loginDTO.getPassword()
         }
         Toast.makeText(view.context, "Login successful!", Toast.LENGTH_LONG).show()
+        sharedPreferences.saveLoginState(view = view, loggedIn = true) // save the login state
     }
+
 
     private suspend fun showMessages() : List<MessageModel> {
         val messages = supabase.from("messages")

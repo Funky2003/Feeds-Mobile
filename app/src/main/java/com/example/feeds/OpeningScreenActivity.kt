@@ -2,12 +2,13 @@ package com.example.feeds
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.View
-import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.feeds.sharedpreferences.SharedPreferences
 
 class OpeningScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,13 +22,27 @@ class OpeningScreen : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        val sharedPreferences = SharedPreferences()
+        if (sharedPreferences.isUserLoggedInBefore(this)) {
+            super.onStart()
+            proceedToMainActivity()
+        }
+    }
+
     fun goToSignUpScreen(view: View) {
-        val signUpActivity = Intent(this, SignUpActivity::class.java)
+        val signUpActivity = Intent(view.context, SignUpActivity::class.java)
         startActivity(signUpActivity)
     }
 
     fun goToSignInScreen(view: View) {
-        val signInIntent = Intent(this, SignInActivity::class.java)
+        val signInIntent = Intent(view.context, SignInActivity::class.java)
         startActivity(signInIntent)
+    }
+
+    private fun proceedToMainActivity() {
+        val mainActivityIntent = Intent(this, MainActivity::class.java)
+        startActivity(mainActivityIntent)
+        finish()
     }
 }
