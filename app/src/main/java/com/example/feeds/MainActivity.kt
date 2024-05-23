@@ -12,15 +12,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.feeds.adapters.CustomAdapter
 import com.example.feeds.models.HeaderItems
 import com.example.feeds.models.ItemsViewModel
+import com.example.feeds.supabase.SupaBase
 import kotlin.random.Random.Default.nextInt
 
+@Suppress("DEPRECATION")
 class MainActivity(
-
     private var username: String = "Bra Funky❤️",
     private var avatar: Int = R.drawable.funky_avatar1,
 ) : AppCompatActivity() {
+    private val supaBase = SupaBase()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+        supaBase.handleDeepLink(intent = intent) // handle the deeplink
+
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -29,8 +36,18 @@ class MainActivity(
             insets
         }
 
+        // handling the deeplink
+        val supaBase = SupaBase()
+        supaBase.handleDeepLink(intent = intent)
+
         // call the recycler
         setRecyclerView()
+    }
+
+    @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.")
+    override fun onBackPressed() {
+            super.onBackPressed()
+            return
     }
 
     private fun setRecyclerView() {
@@ -97,7 +114,7 @@ class MainActivity(
         item.setName(this.username)
         item.setProfileAvatar(this.avatar)
 
-        val chatIntent = Intent(this, ChatScreen::class.java)
+        val chatIntent = Intent(view.context, ChatScreen::class.java)
 
         chatIntent.putExtra("username", item.getName())
         chatIntent.putExtra("profile", item.getProfileAvatar())

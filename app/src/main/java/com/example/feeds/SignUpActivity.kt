@@ -28,7 +28,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     fun goToSignInScreen(view: View) {
-        val signInIntent = Intent(this, SignInActivity::class.java)
+        val signInIntent = Intent(view.context, SignInActivity::class.java)
         startActivity(signInIntent)
         finish()
     }
@@ -52,9 +52,10 @@ class SignUpActivity : AppCompatActivity() {
 
         clearTextFields() // clear the text fields
         runBlocking {
+            signInActivity.showProgressHideButton(progressBar = progressBar, button = signUpButton)
+
             try {
-                signInActivity.showProgressHideButton(progressBar = progressBar, button = signUpButton)
-                supaBase.newUser(view, user)
+                supaBase.createNewUser(view, user)
             } catch (e: Exception) {
                 Toast.makeText(view.context, "Cannot register account, try again later.", Toast.LENGTH_LONG).show()
 

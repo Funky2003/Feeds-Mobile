@@ -10,9 +10,10 @@ import com.example.feeds.R
 import com.example.feeds.adapters.ChatAdapter
 import com.example.feeds.constants.Secrets
 import com.example.feeds.dtos.LoginDTO
+import com.example.feeds.dtos.ProfileDTO
+import com.example.feeds.dtos.SignupDTO
 import com.example.feeds.models.ChatModel
 import com.example.feeds.models.MessageModel
-import com.example.feeds.dtos.SignupDTO
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.gotrue.auth
@@ -20,6 +21,7 @@ import io.github.jan.supabase.gotrue.handleDeeplinks
 import io.github.jan.supabase.gotrue.providers.builtin.Email
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.result.PostgrestResult
 import kotlinx.coroutines.runBlocking
 
 val secrets: Secrets = Secrets()
@@ -32,36 +34,46 @@ val supabase = createSupabaseClient(
 }
 class SupaBase {
 
+    lateinit var callback: (String, String) -> Unit
     fun handleDeepLink(intent: Intent) {
-        supabase.handleDeeplinks(
-            intent = intent,
-            onSessionSuccess = {
-                userSession -> userSession.user?.id
-                println("\n\nTHE REGISTERED USER: ${userSession.user?.id}\n\n")
+            supabase.handleDeeplinks(intent = intent, onSessionSuccess = {
+                    userSession -> userSession.user?.apply {
+                println("LOGIN Log in successfully with user info: ${userSession.user}")
+                callback(email ?: "", createdAt.toString())
             }
-        )
+        })
     }
 
 
     //<-- Create a new user -->
-    suspend fun newUser(view: View, user: SignupDTO) {
-        println("THE USER DATA: ${user.getUsername()}, ${user.getEmail()}, ${user.getPassword()}, ${user.getConfirmPassword()}")
-        val response = supabase.auth.signUpWith(Email){
-            email = user.getEmail()
-            password = user.getPassword()
-        }
+    suspend fun createNewUser(view: View, user: SignupDTO) {
+        try {
+            val response = supabase.auth.signUpWith(Email) {
+                email = user.getEmail()
+                password = user.getPassword()
+            }
 
-        Toast.makeText(view.context, "Account created!\nConfirm your email 📧", Toast.LENGTH_LONG).show()
-        println("USER ADDED SUCCESSFULLY: ${response?.confirmedAt}")
+            if (response?.id != null) {
+                val profileDTO = ProfileDTO(response.id, user.getUsername())
+                addUserName(profileDTO = profileDTO)
+                Toast.makeText(view.context, "Account created!\nConfirm your email 📧", Toast.LENGTH_LONG).show()
+            } else {
+                throw Exception("Sign-up failed: No user ID returned.")
+            }
+        } catch (e: Exception) {
+            Toast.makeText(view.context, "Cannot register account, try again later.", Toast.LENGTH_LONG).show()
+            println("AN ERROR OCCURRED: $e")
+        }
     }
 
-    private suspend fun addUserName(id: String, username: String) {
-        supabase.from("profiles")
-            .insert(listOf(
-                id,
-                username
-            ))
-            .decodeList<String>()
+    private suspend fun addUserName(profileDTO: ProfileDTO) {
+        try {
+            val response: PostgrestResult = supabase.from("profiles")
+                .insert(listOf(profileDTO))
+            println("INSERTED DATA: ${response.data}")
+        } catch (e: Exception) {
+            println("AN ERROR OCCURRED DURING PROFILE INSERTION: $e")
+        }
     }
 
     //<-- Login user -->
@@ -70,7 +82,6 @@ class SupaBase {
             email = loginDTO.getEmail()
             password = loginDTO.getPassword()
         }
-
         Toast.makeText(view.context, "Login successful!", Toast.LENGTH_LONG).show()
     }
 

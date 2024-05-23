@@ -21,10 +21,10 @@
             android:name=".SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".DeepLinkHandlerActivity"
             android:exported="false" />
         <activity
-            android:name=".DeepLinkHandlerActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask">
             <intent-filter>
@@ -43,10 +43,10 @@
             android:exported="false" />
         <activity
             android:name=".OpeningScreen"
-            android:exported="true">
+            android:exported="true"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

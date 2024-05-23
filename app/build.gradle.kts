@@ -37,6 +37,7 @@ android {
 }
 
 dependencies {
+    // data store
 
     // supabase implementation
     implementation(platform("io.github.jan-tennert.supabase:bom:2.4.2"))
