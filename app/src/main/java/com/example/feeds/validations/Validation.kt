@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.widget.EditText
 import android.widget.TextView
 import com.example.feeds.R
+import com.example.feeds.SignInActivity
 import com.example.feeds.SignUpActivity
 
 class Validation {
@@ -68,6 +69,38 @@ class Validation {
         } else {
             confirmPasswordLabel.text = view.getString(R.string.confirm_password_start_upper)
             confirmPasswordLabel.setTextColor(Color.parseColor("#000000"))
+        }
+
+        return isValid
+    }
+
+    fun validateSingInFields(view: SignInActivity): Boolean {
+        val email = view.findViewById<EditText>(R.id.login_email_editText).text.toString()
+        val password = view.findViewById<EditText>(R.id.login_password_editText).text.toString()
+
+        val emailLabel = view.findViewById<TextView>(R.id.login_email_label)
+        val passwordLabel = view.findViewById<TextView>(R.id.login_password_label)
+
+        var isValid = true
+
+        // Validate email
+        if (email.isEmpty()) {
+            emailLabel.text = view.getString(R.string.field_cannot_be_empty)
+            emailLabel.setTextColor(Color.parseColor("#F54135"))
+            isValid = false
+        } else {
+            emailLabel.text = view.getString(R.string.email_start_upper)
+            emailLabel.setTextColor(Color.parseColor("#000000"))
+        }
+
+        // Validate password
+        if (password.isEmpty()) {
+            passwordLabel.text = view.getString(R.string.field_cannot_be_empty)
+            passwordLabel.setTextColor(Color.parseColor("#F54135"))
+            isValid = false
+        } else {
+            passwordLabel.text = view.getString(R.string.password_start_upper)
+            passwordLabel.setTextColor(Color.parseColor("#000000"))
         }
 
         return isValid

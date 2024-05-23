@@ -32,10 +32,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/black_star"
-            app:layout_constraintBottom_toTopOf="@id/email_label"/>
+            app:layout_constraintBottom_toTopOf="@id/login_email_label"/>
 
         <TextView
-            android:id="@+id/email_label"
+            android:id="@+id/login_email_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
@@ -56,13 +56,13 @@
             android:inputType="textEmailAddress"
             android:hint="@string/email"
             android:background="@drawable/custom_edit_text"
-            app:layout_constraintTop_toBottomOf="@id/email_label"
+            app:layout_constraintTop_toBottomOf="@id/login_email_label"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/password_label"/>
+            app:layout_constraintBottom_toTopOf="@id/login_password_label"/>
 
         <TextView
-            android:id="@+id/password_label"
+            android:id="@+id/login_password_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
@@ -83,7 +83,7 @@
             android:inputType="textPassword"
             android:hint="@string/password"
             android:background="@drawable/custom_edit_text"
-            app:layout_constraintTop_toBottomOf="@id/password_label"
+            app:layout_constraintTop_toBottomOf="@id/login_password_label"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/log_in_button"/>

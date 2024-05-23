@@ -13,6 +13,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.feeds.dtos.LoginDTO
 import com.example.feeds.supabase.SupaBase
+import com.example.feeds.validations.Validation
 import kotlinx.coroutines.runBlocking
 
 class SignInActivity : AppCompatActivity() {
@@ -33,17 +34,26 @@ class SignInActivity : AppCompatActivity() {
         finish()
     }
 
+    private val validation = Validation()
     fun signInUser(view: View) {
         val email = findViewById<EditText>(R.id.login_email_editText)
         val password = findViewById<EditText>(R.id.login_password_editText)
-        val progressBar = findViewById<ProgressBar>(R.id.signin_progress_bar)
-        val signInButton = findViewById<Button>(R.id.log_in_button)
 
         val loginDTO = LoginDTO(
             email = email.text.toString(),
             password = password.text.toString()
         )
+
+        if (validation.validateSingInFields(this)) {
+            doSignIn(view, loginDTO)
+        }
+    }
+
+    private fun doSignIn(view: View, loginDTO: LoginDTO) {
         val supaBase = SupaBase()
+        val progressBar = findViewById<ProgressBar>(R.id.signin_progress_bar)
+        val signInButton = findViewById<Button>(R.id.log_in_button)
+
         runBlocking {
             showProgressHideButton(progressBar = progressBar, button = signInButton)
 
