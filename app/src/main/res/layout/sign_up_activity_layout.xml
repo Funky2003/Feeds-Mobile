@@ -93,26 +93,35 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
             android:text="@string/password_start_upper"
-            app:layout_constraintBottom_toTopOf="@id/password_editText"
-            app:layout_constraintEnd_toEndOf="@id/password_editText"
+            app:layout_constraintBottom_toTopOf="@id/password_editTextLayout"
+            app:layout_constraintEnd_toEndOf="@id/password_editTextLayout"
             app:layout_constraintTop_toBottomOf="@id/email_editText"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@id/password_editText" />
+            app:layout_constraintStart_toStartOf="@id/password_editTextLayout" />
 
-        <EditText
-            android:id="@+id/password_editText"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/password_editTextLayout"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:padding="8dp"
-            android:autofillHints="Password"
-            android:inputType="textPassword"
-            android:hint="@string/must_be_8_characters"
-            android:background="@drawable/custom_edit_text"
-            app:layout_constraintTop_toBottomOf="@id/password_label"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textColorHint="@color/hint_grey_color"
+            app:hintEnabled="false"
+            app:layout_constraintBottom_toTopOf="@id/confirm_password_label"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/confirm_password_label"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/password_label"
+            app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:padding="8dp"
+                    android:autofillHints="Password"
+                    android:inputType="textPassword"
+                    android:background="@drawable/custom_edit_text"
+                    android:hint="@string/must_be_8_characters" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/confirm_password_label"
@@ -120,27 +129,35 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
             android:text="@string/confirm_password_start_upper"
-            app:layout_constraintBottom_toTopOf="@id/confirm_password_editText"
-            app:layout_constraintEnd_toEndOf="@id/confirm_password_editText"
-            app:layout_constraintTop_toBottomOf="@id/password_editText"
+            app:layout_constraintBottom_toTopOf="@id/confirm_password_editTextLayout"
+            app:layout_constraintEnd_toEndOf="@id/confirm_password_editTextLayout"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@id/confirm_password_editText" />
+            app:layout_constraintStart_toStartOf="@id/confirm_password_editTextLayout"
+            app:layout_constraintTop_toBottomOf="@id/password_editTextLayout" />
 
-        <EditText
-            android:id="@+id/confirm_password_editText"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/confirm_password_editTextLayout"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:padding="8dp"
-            android:textColor="@color/black"
-            android:autofillHints="Password"
-            android:inputType="textPassword"
-            android:hint="@string/repeat_password_hint"
-            android:background="@drawable/custom_edit_text"
-            app:layout_constraintTop_toBottomOf="@id/confirm_password_label"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textColorHint="@color/hint_grey_color"
+            app:hintEnabled="false"
+            app:layout_constraintBottom_toTopOf="@id/create_account_button"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/create_account_button"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/confirm_password_label"
+            app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/confirm_password_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:autofillHints="Password"
+                    android:background="@drawable/custom_edit_text"
+                    android:hint="@string/repeat_password_hint"
+                    android:inputType="textPassword"
+                    android:padding="8dp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <ProgressBar
             android:id="@+id/signup_progress_bar"
@@ -162,7 +179,7 @@
             android:visibility="visible"
             android:onClick="addNewUser"
             android:background="@drawable/ripple_black_button_background"
-            app:layout_constraintTop_toBottomOf="@id/confirm_password_editText"
+            app:layout_constraintTop_toBottomOf="@id/confirm_password_editTextLayout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/lin_layout"/>

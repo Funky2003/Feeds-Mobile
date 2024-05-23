@@ -40,6 +40,9 @@ dependencies {
     // data store
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.28")
 
+    // material theme from google
+    implementation("com.google.android.material:material:1.9.0")
+
     // supabase implementation
     implementation(platform("io.github.jan-tennert.supabase:bom:2.4.2"))
     implementation("io.github.jan-tennert.supabase:postgrest-kt:2.4.2")
