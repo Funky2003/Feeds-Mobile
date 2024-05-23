@@ -13,6 +13,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.feeds.dtos.SignupDTO
 import com.example.feeds.supabase.SupaBase
+import com.example.feeds.validations.Validation
 import kotlinx.coroutines.runBlocking
 
 class SignUpActivity : AppCompatActivity() {
@@ -33,9 +34,9 @@ class SignUpActivity : AppCompatActivity() {
         finish()
     }
 
+    private val signInActivity = SignInActivity()
+    private val validation = Validation()
     fun addNewUser(view: View) {
-        val signInActivity = SignInActivity()
-
         val username = findViewById<EditText>(R.id.username_editText)
         val email = findViewById<EditText>(R.id.email_editText)
         val password = findViewById<EditText>(R.id.password_editText)
@@ -47,24 +48,27 @@ class SignUpActivity : AppCompatActivity() {
             username.text.toString(),
             email.text.toString(),
             password.text.toString(),
-            confirmPassword.text.toString())
+            confirmPassword.text.toString()
+        )
+        if (validation.validateSignupFields(this)) {
+            clearTextFields() // clear the text fields
+            performSignup(view, user, progressBar, signUpButton) // do the signup
+        }
+    }
+    private fun performSignup(view: View, user: SignupDTO, progressBar: ProgressBar, button: Button) {
         val supaBase = SupaBase()
-
-        clearTextFields() // clear the text fields
         runBlocking {
-            signInActivity.showProgressHideButton(progressBar = progressBar, button = signUpButton)
-
             try {
+                signInActivity.showProgressHideButton(progressBar, button)
                 supaBase.createNewUser(view, user)
             } catch (e: Exception) {
                 Toast.makeText(view.context, "Cannot register account, try again later.", Toast.LENGTH_LONG).show()
-
-                signInActivity.hideProgressShowButton(progressBar = progressBar, button = signUpButton)
+                signInActivity.hideProgressShowButton(progressBar = progressBar, button = button)
                 println("AN ERROR OCCURRED: $e")
             }
         }
+        signInActivity.hideProgressShowButton(progressBar = progressBar, button = button)
     }
-
     private fun clearTextFields() {
         val username = findViewById<EditText>(R.id.username_editText)
         val email = findViewById<EditText>(R.id.email_editText)

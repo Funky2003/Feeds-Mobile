@@ -25,9 +25,9 @@ class OpeningScreen : AppCompatActivity() {
     override fun onStart() {
         val sharedPreferences = SharedPreferences()
         if (sharedPreferences.isUserLoggedInBefore(this)) {
-            super.onStart()
             proceedToMainActivity()
         }
+        super.onStart()
     }
 
     fun goToSignUpScreen(view: View) {

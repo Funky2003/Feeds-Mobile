@@ -57,7 +57,7 @@ class SupaBase {
 
             if (response?.id != null) {
                 val profileDTO = ProfileDTO(response.id, user.getUsername())
-                addUserName(profileDTO = profileDTO)
+                addUserName(view = view, profileDTO = profileDTO)
                 Toast.makeText(view.context, "Account created!\nConfirm your email 📧", Toast.LENGTH_LONG).show()
             } else {
                 throw Exception("Sign-up failed: No user ID returned.")
@@ -68,10 +68,11 @@ class SupaBase {
         }
     }
 
-    private suspend fun addUserName(profileDTO: ProfileDTO) {
+    private suspend fun addUserName(view: View, profileDTO: ProfileDTO) {
         try {
             val response: PostgrestResult = supabase.from("profiles")
                 .insert(listOf(profileDTO))
+            sharedPreferences.saveLoginState(view = view, loggedIn = true) // save the login state
             println("INSERTED DATA: ${response.data}")
         } catch (e: Exception) {
             println("AN ERROR OCCURRED DURING PROFILE INSERTION: $e")
