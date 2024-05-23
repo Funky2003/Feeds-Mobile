@@ -19,7 +19,8 @@
             android:exported="false" />
         <activity
             android:name=".SignUpActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:noHistory="true"/>
         <activity
             android:name=".DeepLinkHandlerActivity"
             android:exported="false" />

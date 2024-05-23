@@ -58,16 +58,16 @@ class SignUpActivity : AppCompatActivity() {
     private fun performSignup(view: View, user: SignupDTO, progressBar: ProgressBar, button: Button) {
         val supaBase = SupaBase()
         runBlocking {
+            signInActivity.showProgressHideButton(progressBar, button)
+
             try {
-                signInActivity.showProgressHideButton(progressBar, button)
                 supaBase.createNewUser(view, user)
+
             } catch (e: Exception) {
                 Toast.makeText(view.context, "Cannot register account, try again later.", Toast.LENGTH_LONG).show()
                 signInActivity.hideProgressShowButton(progressBar = progressBar, button = button)
-                println("AN ERROR OCCURRED: $e")
             }
         }
-        signInActivity.hideProgressShowButton(progressBar = progressBar, button = button)
     }
     private fun clearTextFields() {
         val username = findViewById<EditText>(R.id.username_editText)

@@ -58,7 +58,6 @@ class SignInActivity : AppCompatActivity() {
                 Toast.makeText(view.context, "Invalid email or password", Toast.LENGTH_LONG).show()
 
                 hideProgressShowButton(progressBar = progressBar, button = signInButton)
-                println("ERROR SIGNING IN: ${e.message}")
             }
         }
     }
