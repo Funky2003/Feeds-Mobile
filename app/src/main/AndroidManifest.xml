@@ -15,24 +15,28 @@
         android:theme="@style/Theme.Feeds"
         tools:targetApi="31">
         <activity
-            android:name=".SignInActivity"
-            android:exported="false" />
-        <activity
-            android:name=".SignUpActivity"
-            android:exported="false"
-            android:noHistory="true"/>
-        <activity
-            android:name=".DeepLinkHandlerActivity"
+            android:name=".ChatScreen"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SignInActivity"
+            android:exported="false"
+            android:noHistory="true"/>
+        <activity
+            android:name=".SignUpActivity"
+            android:exported="false"
+            android:noHistory="true" />
+        <activity
+            android:name=".DeepLinkHandlerActivity"
             android:exported="true"
+            android:noHistory="true"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
                     android:host="kwaooqbghotsbltzpipn.supabase.co"
                     android:pathPrefix="/auth/v1/verify"
@@ -40,17 +44,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ChatScreen"
-            android:exported="false" />
-        <activity
             android:name=".OpeningScreen"
             android:exported="true"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:theme="@style/Base.Theme.Feeds.Launch">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

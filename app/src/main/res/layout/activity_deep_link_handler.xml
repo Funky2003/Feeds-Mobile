@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    android:gravity="center"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DeepLinkHandlerActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/account_verified_gif"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/happy_mood_gif"
+        android:visibility="gone"/>
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/account_verification_failed_gif"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/sad_mood_gif"
+        android:visibility="gone"/>
+</LinearLayout>

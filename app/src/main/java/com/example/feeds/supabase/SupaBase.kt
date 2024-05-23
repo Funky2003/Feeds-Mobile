@@ -1,6 +1,5 @@
 package com.example.feeds.supabase
 
-import android.content.Intent
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +17,6 @@ import com.example.feeds.sharedpreferences.SharedPreferences
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.gotrue.auth
-import io.github.jan.supabase.gotrue.handleDeeplinks
 import io.github.jan.supabase.gotrue.providers.builtin.Email
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
@@ -34,18 +32,16 @@ val supabase = createSupabaseClient(
     install(Auth)
 }
 class SupaBase {
+    fun getUser() : String {
+        var user: String
 
-    private val sharedPreferences = SharedPreferences()
-    lateinit var callback: (String, String) -> Unit
-    fun handleDeepLink(intent: Intent) {
-            supabase.handleDeeplinks(intent = intent, onSessionSuccess = {
-                    userSession -> userSession.user?.apply {
-                println("LOGIN Log in successfully with user info: ${userSession.user}")
-                callback(email ?: "", createdAt.toString())
-            }
-        })
+        runBlocking {
+            val result = supabase.auth.sessionManager.loadSession()?.user
+            user = result?.aud.toString()
+            println("THE CURRENT USER: ${result?.aud}")
+        }
+        return user
     }
-
 
     //<-- Create a new user -->
     suspend fun createNewUser(view: View, user: SignupDTO) {
@@ -58,6 +54,7 @@ class SupaBase {
             if (response?.id != null) {
                 val profileDTO = ProfileDTO(response.id, user.getUsername())
                 addUserName(view = view, profileDTO = profileDTO)
+                sharedPreferences.showSuccessGifState(view.context, false)
                 Toast.makeText(view.context, "Account created!\nConfirm your email 📧", Toast.LENGTH_LONG).show()
             } else {
                 throw Exception("Sign-up failed: No user ID returned.")
@@ -68,6 +65,7 @@ class SupaBase {
         }
     }
 
+    private val sharedPreferences = SharedPreferences()
     private suspend fun addUserName(view: View, profileDTO: ProfileDTO) {
         try {
             val response: PostgrestResult = supabase.from("profiles")
@@ -87,6 +85,7 @@ class SupaBase {
         }
         Toast.makeText(view.context, "Login successful!", Toast.LENGTH_LONG).show()
         sharedPreferences.saveLoginState(view = view, loggedIn = true) // save the login state
+        sharedPreferences.showSuccessGifState(view.context, true)
     }
 
 

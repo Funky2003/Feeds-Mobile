@@ -38,6 +38,7 @@ android {
 
 dependencies {
     // data store
+    implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.28")
 
     // supabase implementation
     implementation(platform("io.github.jan-tennert.supabase:bom:2.4.2"))

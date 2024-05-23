@@ -24,10 +24,6 @@ class MainActivity(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
-        supaBase.handleDeepLink(intent = intent) // handle the deeplink
-
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -35,10 +31,6 @@ class MainActivity(
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        // handling the deeplink
-        val supaBase = SupaBase()
-        supaBase.handleDeepLink(intent = intent)
 
         // call the recycler
         setRecyclerView()
