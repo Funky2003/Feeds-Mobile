@@ -1,5 +1,6 @@
 package com.example.feeds.models
 
 data class ChatModel(
-    val textMessage: String
+    val textMessage: String,
+    val isSent: Boolean
 )

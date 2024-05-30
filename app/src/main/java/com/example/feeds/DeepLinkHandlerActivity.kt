@@ -27,6 +27,7 @@ class DeepLinkHandlerActivity : AppCompatActivity() {
         }
     }
 
+    @Suppress("DEPRECATION")
     @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.")
     override fun onBackPressed() {
         val openingScreenActivity = Intent(this, OpeningScreen::class.java)

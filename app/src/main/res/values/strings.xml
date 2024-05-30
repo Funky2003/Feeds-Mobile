@@ -26,4 +26,6 @@
     <string name="password_mismatch">Password mismatch!</string>
     <string name="field_cannot_be_empty">Field cannot be empty</string>
     <string name="password_length_too_short_start_upper">Password length too short</string>
+    <string name="write">Write</string>
+    <string name="send_message">send message</string>
 </resources>

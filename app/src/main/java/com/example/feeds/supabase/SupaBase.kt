@@ -1,18 +1,25 @@
 package com.example.feeds.supabase
 
 import android.view.View
+import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.feeds.ChatScreen
+import com.example.feeds.MainActivity
 import com.example.feeds.R
 import com.example.feeds.adapters.ChatAdapter
+import com.example.feeds.adapters.CustomAdapter
 import com.example.feeds.constants.Secrets
 import com.example.feeds.dtos.LoginDTO
 import com.example.feeds.dtos.ProfileDTO
 import com.example.feeds.dtos.SignupDTO
 import com.example.feeds.models.ChatModel
+import com.example.feeds.models.ItemsViewModel
 import com.example.feeds.models.MessageModel
+import com.example.feeds.network.Connectivity
 import com.example.feeds.sharedpreferences.SharedPreferences
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.Auth
@@ -21,7 +28,12 @@ import io.github.jan.supabase.gotrue.providers.builtin.Email
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.result.PostgrestResult
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+
 
 val secrets: Secrets = Secrets()
 val supabase = createSupabaseClient(
@@ -89,29 +101,72 @@ class SupaBase {
     }
 
 
-    private suspend fun showMessages() : List<MessageModel> {
-        val messages = supabase.from("messages")
-            .select()
-            .decodeList<MessageModel>()
-        return messages
-    }
+    private val connectivity: Connectivity = Connectivity()
+    suspend fun showUsers(appContext: MainActivity) {
+        val recyclerView = appContext.findViewById<RecyclerView>(R.id.recyclerview)
+        recyclerView.layoutManager = LinearLayoutManager(appContext)
+        var output: ArrayList<MessageModel>
 
-    fun setRecyclerView(view: ChatScreen) {
-        val chatRecycler = view.findViewById<RecyclerView>(R.id.chat_recyclerview)
-        chatRecycler.layoutManager = LinearLayoutManager(view)
+        appContext.lifecycleScope.launch(Dispatchers.IO) {
+            if (connectivity.isNetworkAvailable(appContext)) {
+                try {
+                    val result = async {
+                        supabase.from("profiles")
+                            .select()
+                            .decodeAs<ArrayList<MessageModel>>()
+                    }
+                    output = result.await()
 
-        val data = ArrayList<ChatModel>()
-        runBlocking {
-            try {
-                showMessages().forEach {
-                    data.add(ChatModel(it.content))
+                    // Convert fetched data to ItemsViewModel list
+                    val data = output.map {
+                        ItemsViewModel(
+                            profileAvatar = R.drawable.funky_avatar,
+                            unreadChatCount = 4,
+                            username = it.username,
+                            textMessage = it.username,
+                            textTime = "3 secs"
+                        )
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        val adapter = CustomAdapter(data)
+                        recyclerView.adapter = adapter
+                    }
+                } catch (e: Exception) {
+                    println(e.stackTrace)
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(appContext, "Failed to fetch data. Check your internet connection.", Toast.LENGTH_LONG).show()
+                    }
                 }
-            } catch (e: Exception) {
-                println("Error fetching data: $e")
+            } else {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(appContext, "No internet connection available.", Toast.LENGTH_LONG).show()
+                }
             }
         }
+    }
 
-        val adapter = ChatAdapter(data)
+
+    private val messages = ArrayList<ChatModel>()
+    fun setRecyclerView(view: ChatScreen) {
+        val chatRecycler = view.findViewById<RecyclerView>(R.id.chat_recyclerview)
+        val textMessage = view.findViewById<EditText>(R.id.chat_editText)
+        val sendMessageButton = view.findViewById<ImageButton>(R.id.send_message_button)
+        chatRecycler.layoutManager = LinearLayoutManager(view)
+
+        val adapter = ChatAdapter(messages)
         chatRecycler.adapter = adapter
+
+        sendMessageButton.setOnClickListener {
+            val messageText = textMessage.text.toString()
+
+            if (messageText.isNotEmpty()) {
+                messages.add(ChatModel(messageText, isSent = true))
+                adapter.notifyItemInserted(messages.size -1)
+                textMessage.text.clear()
+
+                chatRecycler.scrollToPosition(messages.size -1)
+            }
+        }
     }
 }

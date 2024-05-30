@@ -13,6 +13,7 @@ import com.example.feeds.adapters.CustomAdapter
 import com.example.feeds.models.HeaderItems
 import com.example.feeds.models.ItemsViewModel
 import com.example.feeds.supabase.SupaBase
+import kotlinx.coroutines.runBlocking
 import kotlin.random.Random.Default.nextInt
 
 @Suppress("DEPRECATION")
@@ -32,14 +33,20 @@ class MainActivity(
             insets
         }
 
-        // call the recycler
-        setRecyclerView()
+        // show the users
+        showUsers()
     }
 
     @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.")
     override fun onBackPressed() {
         super.onBackPressed()
         finishAffinity()
+    }
+
+    private fun showUsers() {
+        runBlocking {
+            supaBase.showUsers(this@MainActivity)
+        }
     }
 
     private fun setRecyclerView() {
@@ -107,7 +114,6 @@ class MainActivity(
         item.setProfileAvatar(this.avatar)
 
         val chatIntent = Intent(view.context, ChatScreen::class.java)
-
         chatIntent.putExtra("username", item.getName())
         chatIntent.putExtra("profile", item.getProfileAvatar())
 

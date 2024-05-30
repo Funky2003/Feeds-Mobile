@@ -54,11 +54,12 @@ dependencies {
 
     //noinspection UseTomlInstead
     implementation("de.hdodenhof:circleimageview:3.1.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.cardview:cardview:1.0.0")
 
     //The retrofit implementation
+    runtimeOnly(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version = "1.9.0-RC")
+    runtimeOnly(group = "androidx.lifecycle", name = "lifecycle-extensions", version = "2.2.0")
     implementation(group = "com.squareup.retrofit2", name = "retrofit", version = "2.9.0")
     implementation(group = "com.google.code.gson", name = "gson", version = "2.10.1" )
     implementation(group = "com.squareup.retrofit2", name = "converter-gson", version = "2.9.0")

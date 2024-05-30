@@ -1,5 +1,8 @@
 package com.example.feeds.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class DataModel(
     var categories: ArrayList<String>,
     var createdAt: String,
@@ -8,4 +11,4 @@ data class DataModel(
     var updatedAt: String,
     var url: String,
     var value: String
-):java.io.Serializable
+)
