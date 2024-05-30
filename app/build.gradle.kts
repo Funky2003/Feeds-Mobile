@@ -36,21 +36,22 @@ android {
     }
 }
 
+//noinspection UseTomlInstead
 dependencies {
     // data store
-    implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.28")
+    implementation(group = "pl.droidsonroids.gif", name = "android-gif-drawable", version = "1.2.28")
 
     // material theme from google
-    implementation("com.google.android.material:material:1.9.0")
+    runtimeOnly(group = "com.google.android.material", name = "material", version = "1.13.0-alpha02")
 
     // supabase implementation
     implementation(platform("io.github.jan-tennert.supabase:bom:2.4.2"))
     implementation("io.github.jan-tennert.supabase:postgrest-kt:2.4.2")
     implementation("io.github.jan-tennert.supabase:storage-kt:2.4.2")
     implementation("io.github.jan-tennert.supabase:gotrue-kt:2.4.2")
-    implementation("io.ktor:ktor-client-android:2.3.9")
+    implementation("io.ktor:ktor-client-android:2.3.11")
     implementation("io.ktor:ktor-client-core:2.3.11")
-    implementation("io.ktor:ktor-utils:2.2.3")
+    implementation("io.ktor:ktor-utils:2.3.11")
 
     //noinspection UseTomlInstead
     implementation("de.hdodenhof:circleimageview:3.1.0")

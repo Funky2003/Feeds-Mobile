@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.feeds.supabase.SupaBase
-import kotlinx.coroutines.runBlocking
 
 class ChatScreen : AppCompatActivity() {
     private val supaBase = SupaBase()
