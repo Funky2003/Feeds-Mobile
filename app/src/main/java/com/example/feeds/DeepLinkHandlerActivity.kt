@@ -46,7 +46,7 @@ class DeepLinkHandlerActivity : AppCompatActivity() {
             val type = data.getQueryParameter("type")
             val redirectTo = data.getQueryParameter("redirect_to")
 
-            if (supaBase.getUser() == "authenticated") {
+            if (supaBase.getUser()?.aud == "authenticated") {
                 println("DeepLinkHandler Token: $token, Type: $type, Redirect To: $redirectTo")
 
                 if (sharedPreferences.isShowSuccessGifBefore(this)) {

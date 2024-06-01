@@ -10,7 +10,7 @@ import com.example.feeds.R
 import com.example.feeds.models.ChatModel
 
 //mList = message list
-class ChatAdapter (private val messages: List<ChatModel>) : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>(){
+class ChatAdapter ( val messages: MutableList<ChatModel>) : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.chat_bubble_component, parent, false)
         return ChatViewHolder(view)
@@ -29,7 +29,7 @@ class ChatAdapter (private val messages: List<ChatModel>) : RecyclerView.Adapter
         private val messageTextView: TextView = itemView.findViewById(R.id.chats)
 
         fun bind(chatModel: ChatModel) {
-            messageTextView.text = chatModel.textMessage
+            messageTextView.text = chatModel.message
 
             val params = messageTextView.layoutParams as RelativeLayout.LayoutParams
             if (chatModel.isSent) {

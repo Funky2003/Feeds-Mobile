@@ -1,16 +1,19 @@
 package com.example.feeds
 
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.feeds.adapters.ChatAdapter
 import com.example.feeds.supabase.SupaBase
 
 class ChatScreen : AppCompatActivity() {
     private val supaBase = SupaBase()
+    var chatAdapter: ChatAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,5 +44,9 @@ class ChatScreen : AppCompatActivity() {
 
         nUsername.text = name
         profileAvatar.setImageResource(profile)
+    }
+
+    fun sendMessage(view: View) {
+        supaBase.sendMessage(this@ChatScreen)
     }
 }

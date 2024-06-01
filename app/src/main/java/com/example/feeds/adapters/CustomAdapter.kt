@@ -1,15 +1,18 @@
 package com.example.feeds.adapters
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.feeds.ChatScreen
 import com.example.feeds.R
 import com.example.feeds.models.ItemsViewModel
 
-class CustomAdapter(private val mList: List<ItemsViewModel>) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
+class CustomAdapter(private val mList: List<ItemsViewModel>, private val context: Context) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_chat_component, parent, false)
         return ViewHolder(view)
@@ -22,6 +25,13 @@ class CustomAdapter(private val mList: List<ItemsViewModel>) : RecyclerView.Adap
         holder.username.text = itemsViewModel.username
         holder.textMessage.text = itemsViewModel.textMessage
         holder.textTime.text = itemsViewModel.textTime
+
+        holder.itemView.setOnClickListener {
+            val chatIntent = Intent(context, ChatScreen::class.java)
+            chatIntent.putExtra("senderId", itemsViewModel.senderId)
+            chatIntent.putExtra("header_user_name", itemsViewModel.username)
+            context.startActivity(chatIntent)
+        }
     }
 
     override fun getItemCount(): Int {

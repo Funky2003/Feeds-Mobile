@@ -47,6 +47,7 @@
         android:contentDescription="@string/send_message"
         android:focusable="true"
         android:foregroundGravity="center"
+        android:onClick="sendMessage"
         android:src="@drawable/send_message_button"
         app:layout_constraintBottom_toBottomOf="@id/chat_editText_layout"
         app:layout_constraintEnd_toEndOf="parent"
