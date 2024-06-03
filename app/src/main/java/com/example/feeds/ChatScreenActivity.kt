@@ -25,12 +25,15 @@ class ChatScreen : AppCompatActivity() {
             insets
         }
 
+
+        // subscribe to incoming messages
+        supaBase.subScribeToIncomingMessages(this@ChatScreen)
+
         // get the username
         setUsernameAndAvatar()
 
         // call the recycler
         supaBase.setRecyclerView(this)
-
     }
 
 

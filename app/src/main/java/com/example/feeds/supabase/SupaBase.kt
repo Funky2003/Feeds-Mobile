@@ -5,6 +5,8 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,8 +34,15 @@ import io.github.jan.supabase.gotrue.user.UserInfo
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.result.PostgrestResult
+import io.github.jan.supabase.realtime.PostgresAction
+import io.github.jan.supabase.realtime.Realtime
+import io.github.jan.supabase.realtime.channel
+import io.github.jan.supabase.realtime.decodeRecord
+import io.github.jan.supabase.realtime.postgresChangeFlow
+import io.github.jan.supabase.realtime.realtime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -42,8 +51,9 @@ import kotlinx.coroutines.withContext
 val secrets: Secrets = Secrets()
 val supabase = createSupabaseClient(
     supabaseUrl = secrets.getSupabaseUrl(),
-    supabaseKey = secrets.getSupabaseKey(),
+    supabaseKey = secrets.getSupabaseKey()
 ) {
+    install(Realtime)
     install(Postgrest)
     install(Auth)
 }
@@ -160,13 +170,46 @@ class SupaBase {
     }
 
 
+    // send the messages
+    fun subScribeToIncomingMessages(context: ChatScreen) {
+        val senderId = context.intent.getStringExtra("senderId")
+        val user = getUser() // get the authenticated user id
+        context.lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                val chanel = supabase.realtime.channel("public:message")
+                val changes = chanel.postgresChangeFlow<PostgresAction.Insert>("public"){
+                    table = "message"
+                }
+
+                changes.collect { change ->
+                    val message = change.decodeRecord<ChatModel>()
+                    println("THE REALTIME MESSAGE: ${message.message}")
+                }
+                try {
+                    supabase.realtime.connect()
+                    println("THE REALTIME MESSAGE: Connection successful!")
+                } catch (exception: Exception) {
+                    println("THE REALTIME MESSAGE: Connection failed to connect!")
+                }
+            }
+        }
+
+        context.lifecycle.addObserver(object : DefaultLifecycleObserver{
+            override fun onDestroy(owner: LifecycleOwner) {
+                super.onDestroy(owner)
+                supabase.realtime.disconnect()
+                println("THE REALTIME MESSAGE: Connection destroyed!")
+            }
+        })
+    }
+
     fun setRecyclerView(context: ChatScreen) {
         val chatRecycler = context.findViewById<RecyclerView>(R.id.chat_recyclerview)
         val progressBar = context.findViewById<ProgressBar>(R.id.chat_progress_bar)
         val userName = context.findViewById<TextView>(R.id.header_username)
-        val senderId = context.intent.getStringExtra("senderId")
         val senderUserName = context.intent.getStringExtra("header_user_name")
         chatRecycler.layoutManager = LinearLayoutManager(context)
+        val senderId = context.intent.getStringExtra("senderId")
         val user = getUser() // get the authenticated user id
 
         context.lifecycleScope.launch {
@@ -213,6 +256,7 @@ class SupaBase {
                         userName.text = senderUserName // set username
                         val adapter = ChatAdapter(data)
                         chatRecycler.adapter = adapter
+                        chatRecycler.scrollToPosition(data.size - 1)
                         progressBar.visibility = ProgressBar.GONE // hide progress bar
 
                         context.chatAdapter = adapter

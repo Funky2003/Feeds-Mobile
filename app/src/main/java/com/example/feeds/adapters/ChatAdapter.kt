@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.feeds.R
 import com.example.feeds.models.ChatModel
+import com.example.feeds.supabase.SupaBase
+import com.example.feeds.supabase.supabase
 
 //mList = message list
 class ChatAdapter ( val messages: MutableList<ChatModel>) : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>(){
@@ -27,12 +29,12 @@ class ChatAdapter ( val messages: MutableList<ChatModel>) : RecyclerView.Adapter
 
     class ChatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val messageTextView: TextView = itemView.findViewById(R.id.chats)
-
+        val supaBase = SupaBase()
         fun bind(chatModel: ChatModel) {
             messageTextView.text = chatModel.message
 
             val params = messageTextView.layoutParams as RelativeLayout.LayoutParams
-            if (chatModel.isSent) {
+            if (chatModel.sender_id == supaBase.getUser()?.id) {
                 params.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE)
                 params.removeRule(RelativeLayout.ALIGN_PARENT_START)
                 messageTextView.setBackgroundResource(R.drawable.chat_bubble_background_sent)
