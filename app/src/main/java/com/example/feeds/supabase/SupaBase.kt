@@ -5,11 +5,6 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,7 +23,6 @@ import com.example.feeds.models.ItemsViewModel
 import com.example.feeds.models.MessageModel
 import com.example.feeds.network.Connectivity
 import com.example.feeds.sharedpreferences.SharedPreferences
-import com.example.feeds.utilities.Utilities
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.gotrue.auth
@@ -39,23 +33,15 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.result.PostgrestResult
 import io.github.jan.supabase.realtime.PostgresAction
 import io.github.jan.supabase.realtime.Realtime
-import io.github.jan.supabase.realtime.RealtimeChannel
-import io.github.jan.supabase.realtime.RealtimeMessage
 import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.decodeRecord
 import io.github.jan.supabase.realtime.postgresChangeFlow
-import io.github.jan.supabase.realtime.postgresListDataFlow
 import io.github.jan.supabase.realtime.realtime
-import io.ktor.util.Identity.decode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.forEach
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import okhttp3.OkHttp
 
 
 val secrets: Secrets = Secrets()
@@ -181,8 +167,6 @@ class SupaBase {
 
     // get the subscription
     fun subscribeToIncomingMessages(context: ChatScreen) {
-        val senderId = context.intent.getStringExtra("senderId")
-        val user = getUser() // get the authenticated user id
 
         context.lifecycleScope.launch(Dispatchers.IO) {
             if (connectivity.isNetworkAvailable(context)) {
@@ -285,7 +269,6 @@ class SupaBase {
         }
     }
 
-    private val utilities = Utilities()
     fun sendMessage(context: ChatScreen) {
         val textMessage = context.findViewById<EditText>(R.id.chat_editText)
         val receiverId = context.intent.getStringExtra("senderId")
