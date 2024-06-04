@@ -57,7 +57,6 @@ val supabase = createSupabaseClient(
 class SupaBase {
     private val connectivity: Connectivity = Connectivity()
     private val sharedPreferences = SharedPreferences()
-
     fun getUser() : UserInfo? {
         var user: UserInfo?
 
@@ -67,6 +66,7 @@ class SupaBase {
         }
         return user
     }
+
 
     //<-- Create a new user -->
     suspend fun createNewUser(view: View, user: SignupDTO) {
@@ -89,7 +89,6 @@ class SupaBase {
             println("AN ERROR OCCURRED: $e")
         }
     }
-
     private suspend fun addUserName(view: View, profileDTO: ProfileDTO) {
         try {
             val response: PostgrestResult = supabase.from("profiles")
@@ -112,7 +111,6 @@ class SupaBase {
         sharedPreferences.saveLoginState(view = view, loggedIn = true) // save the login state
         sharedPreferences.showSuccessGifState(view.context, true)
     }
-
     suspend fun showUsers(appContext: MainActivity) {
         val recyclerView = appContext.findViewById<RecyclerView>(R.id.recyclerview)
         val progressBar = appContext.findViewById<ProgressBar>(R.id.homepage_progress_bar)
@@ -165,7 +163,8 @@ class SupaBase {
         }
     }
 
-    // get the subscription
+
+    //<--- get the subscription --->
     fun subscribeToIncomingMessages(context: ChatScreen) {
 
         context.lifecycleScope.launch(Dispatchers.IO) {
@@ -200,7 +199,8 @@ class SupaBase {
         }
     }
 
-    // send the messages
+
+    //<---- send the messages ---->
     fun setRecyclerView(context: ChatScreen) {
         val chatRecycler = context.findViewById<RecyclerView>(R.id.chat_recyclerview)
         val progressBar = context.findViewById<ProgressBar>(R.id.chat_progress_bar)
@@ -268,7 +268,6 @@ class SupaBase {
             }
         }
     }
-
     fun sendMessage(context: ChatScreen) {
         val textMessage = context.findViewById<EditText>(R.id.chat_editText)
         val receiverId = context.intent.getStringExtra("senderId")
