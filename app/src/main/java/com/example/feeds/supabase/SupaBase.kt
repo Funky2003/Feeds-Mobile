@@ -316,15 +316,6 @@ class SupaBase {
                     }
                     message.await()
 
-                    val insertedMessage = ChatModel(
-                        id = utilities.generateUniqueId(),
-                        created_at = utilities.getCurrentTimeStamp(),
-                        sender_id = sender.id,
-                        receiver_id = receiverId,
-                        isSent = true,
-                        message = messageDTO.message
-                    )
-
                     withContext(Dispatchers.Main) {
                         textMessage.text.clear()
                     }
