@@ -56,6 +56,7 @@ val supabase = createSupabaseClient(
 }
 class SupaBase {
     private val connectivity: Connectivity = Connectivity()
+    private val sharedPreferences = SharedPreferences()
 
     fun getUser() : UserInfo? {
         var user: UserInfo?
@@ -89,7 +90,6 @@ class SupaBase {
         }
     }
 
-    private val sharedPreferences = SharedPreferences()
     private suspend fun addUserName(view: View, profileDTO: ProfileDTO) {
         try {
             val response: PostgrestResult = supabase.from("profiles")
