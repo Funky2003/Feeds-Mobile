@@ -55,6 +55,8 @@ val supabase = createSupabaseClient(
     useHTTPS = true
 }
 class SupaBase {
+    private val connectivity: Connectivity = Connectivity()
+
     fun getUser() : UserInfo? {
         var user: UserInfo?
 
@@ -111,8 +113,6 @@ class SupaBase {
         sharedPreferences.showSuccessGifState(view.context, true)
     }
 
-
-    private val connectivity: Connectivity = Connectivity()
     suspend fun showUsers(appContext: MainActivity) {
         val recyclerView = appContext.findViewById<RecyclerView>(R.id.recyclerview)
         val progressBar = appContext.findViewById<ProgressBar>(R.id.homepage_progress_bar)
