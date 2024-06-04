@@ -7,6 +7,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,16 +39,23 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.result.PostgrestResult
 import io.github.jan.supabase.realtime.PostgresAction
 import io.github.jan.supabase.realtime.Realtime
+import io.github.jan.supabase.realtime.RealtimeChannel
+import io.github.jan.supabase.realtime.RealtimeMessage
 import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.decodeRecord
 import io.github.jan.supabase.realtime.postgresChangeFlow
+import io.github.jan.supabase.realtime.postgresListDataFlow
 import io.github.jan.supabase.realtime.realtime
+import io.ktor.util.Identity.decode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttp
 
 
 val secrets: Secrets = Secrets()
@@ -56,6 +66,7 @@ val supabase = createSupabaseClient(
     install(Realtime)
     install(Postgrest)
     install(Auth)
+    useHTTPS = true
 }
 class SupaBase {
     fun getUser() : UserInfo? {
@@ -64,7 +75,6 @@ class SupaBase {
         runBlocking {
             val result = supabase.auth.sessionManager.loadSession()?.user
             user = result
-            println("THE CURRENT USER: ${result?.aud}")
         }
         return user
     }
@@ -169,40 +179,44 @@ class SupaBase {
         }
     }
 
-
-    // send the messages
-    fun subScribeToIncomingMessages(context: ChatScreen) {
+    // get the subscription
+    fun subscribeToIncomingMessages(context: ChatScreen) {
         val senderId = context.intent.getStringExtra("senderId")
         val user = getUser() // get the authenticated user id
-        context.lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                val chanel = supabase.realtime.channel("public:message")
-                val changes = chanel.postgresChangeFlow<PostgresAction.Insert>("public"){
-                    table = "message"
+
+        context.lifecycleScope.launch(Dispatchers.IO) {
+            if (connectivity.isNetworkAvailable(context)) {
+                withContext(Dispatchers.Main) {
+                    println("\n\nSTARTING THE WEB SOCKET...")
                 }
 
-                changes.collect { change ->
-                    val message = change.decodeRecord<ChatModel>()
-                    println("THE REALTIME MESSAGE: ${message.message}")
-                }
                 try {
-                    supabase.realtime.connect()
-                    println("THE REALTIME MESSAGE: Connection successful!")
-                } catch (exception: Exception) {
-                    println("THE REALTIME MESSAGE: Connection failed to connect!")
+                    val channel = supabase.realtime.channel("public:message")
+                    val productChangeFlow = channel.postgresChangeFlow<PostgresAction.Insert>(schema = "public") {
+                        table = "message"
+                    }
+                    channel.subscribe()
+
+                    productChangeFlow.collect { message ->
+                        val chatData = message.decodeRecord<ChatModel>()
+
+                        withContext(Dispatchers.Main) {
+                            context.chatAdapter?.messages?.add(chatData)
+                            context.findViewById<RecyclerView>(R.id.chat_recyclerview).scrollToPosition(context.chatAdapter?.itemCount?.minus(1) ?: 0)
+                        }
+                    }
+                } catch (e: Exception) {
+                    println("\n\nAnd an error: $e")
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Cannot print the live message", Toast.LENGTH_LONG).show()
                 }
             }
         }
-
-        context.lifecycle.addObserver(object : DefaultLifecycleObserver{
-            override fun onDestroy(owner: LifecycleOwner) {
-                super.onDestroy(owner)
-                supabase.realtime.disconnect()
-                println("THE REALTIME MESSAGE: Connection destroyed!")
-            }
-        })
     }
 
+    // send the messages
     fun setRecyclerView(context: ChatScreen) {
         val chatRecycler = context.findViewById<RecyclerView>(R.id.chat_recyclerview)
         val progressBar = context.findViewById<ProgressBar>(R.id.chat_progress_bar)
@@ -239,7 +253,6 @@ class SupaBase {
                             .decodeAs<ArrayList<ChatModel>>()
                     }
                     val fetchedData = result.await()
-                    println("THE MESSAGE: $fetchedData")
 
                     val data = fetchedData.map {
                         ChatModel(
@@ -253,11 +266,11 @@ class SupaBase {
                     }.toMutableList()
 
                     withContext(Dispatchers.Main) {
-                        userName.text = senderUserName // set username
+                        userName.text = senderUserName
                         val adapter = ChatAdapter(data)
                         chatRecycler.adapter = adapter
                         chatRecycler.scrollToPosition(data.size - 1)
-                        progressBar.visibility = ProgressBar.GONE // hide progress bar
+                        progressBar.visibility = ProgressBar.GONE
 
                         context.chatAdapter = adapter
                     }
@@ -301,8 +314,7 @@ class SupaBase {
                                 )
                             )
                     }
-                    val result = message.await()
-                    println("THE RESULTS: ${result.data}")
+                    message.await()
 
                     val insertedMessage = ChatModel(
                         id = utilities.generateUniqueId(),
@@ -314,10 +326,7 @@ class SupaBase {
                     )
 
                     withContext(Dispatchers.Main) {
-                        context.chatAdapter?.messages?.add(insertedMessage)
                         textMessage.text.clear()
-
-                        context.findViewById<RecyclerView>(R.id.chat_recyclerview).scrollToPosition(context.chatAdapter?.itemCount?.minus(1) ?: 0)
                     }
                 } catch (exception: Exception) {
                     println("ERROR SENDING MESSAGE: $exception")

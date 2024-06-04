@@ -45,6 +45,7 @@ dependencies {
     runtimeOnly(group = "com.google.android.material", name = "material", version = "1.13.0-alpha02")
 
     // supabase implementation
+    runtimeOnly(group = "io.ktor", name = "ktor-client-okhttp-jvm", version = "2.3.11")
     runtimeOnly(group = "io.ktor", name = "ktor-client-websockets-jvm", version = "2.3.11")
     implementation(group = "com.squareup.okhttp3", name = "okhttp", version = "4.12.0")
     implementation(platform("io.github.jan-tennert.supabase:bom:2.4.2"))
