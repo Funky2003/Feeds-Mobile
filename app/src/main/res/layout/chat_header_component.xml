@@ -1,21 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <!-- the profile avatar -->
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/header_avatar"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/funky_avatar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <!-- the profile avatar -->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/header_avatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/funky_avatar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <RelativeLayout
+            android:id="@+id/online_icon"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:background="@drawable/txt_circular"
+            android:backgroundTint="@color/online_color"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/header_avatar"
+            app:layout_constraintEnd_toEndOf="@id/header_avatar"
+            app:layout_constraintStart_toStartOf="@null"
+            app:layout_constraintTop_toTopOf="@id/header_avatar"
+            app:layout_constraintVertical_bias="0.9" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/header_username"
@@ -23,9 +43,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Funky"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/header_avatar"
-        app:layout_constraintStart_toStartOf="@id/header_avatar"
-        app:layout_constraintTop_toBottomOf="@id/header_avatar" />
+        android:textColor="@color/white"/>
 </LinearLayout>

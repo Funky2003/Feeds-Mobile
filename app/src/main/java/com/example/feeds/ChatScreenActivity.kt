@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.feeds.adapters.ChatAdapter
 import com.example.feeds.supabase.SupaBase
+import kotlinx.coroutines.runBlocking
 
 class ChatScreen : AppCompatActivity() {
     private val supaBase = SupaBase()
@@ -30,6 +31,9 @@ class ChatScreen : AppCompatActivity() {
 
         // get the username
         setUsernameAndAvatar()
+
+        // get the user's live status
+        supaBase.isOnline(this)
 
         // call the recycler
         supaBase.setRecyclerView(this)

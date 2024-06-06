@@ -1,15 +1,15 @@
 package com.example.feeds.supabase
 
+import android.content.Context
 import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,6 +36,7 @@ import io.github.jan.supabase.gotrue.providers.builtin.Email
 import io.github.jan.supabase.gotrue.user.UserInfo
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.filter.FilterOperator
 import io.github.jan.supabase.postgrest.result.PostgrestResult
 import io.github.jan.supabase.realtime.PostgresAction
 import io.github.jan.supabase.realtime.PresenceAction
@@ -46,7 +47,6 @@ import io.github.jan.supabase.realtime.postgresChangeFlow
 import io.github.jan.supabase.realtime.presenceChangeFlow
 import io.github.jan.supabase.realtime.realtime
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -206,92 +206,137 @@ class SupaBase {
         }
     }
 
-    // track the user status
-    fun trackUserStatus(mainActivity: MainActivity) {
-        mainActivity.lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                val channel = supabase.realtime.channel("public:user_status")
-                val statusFlow: Flow<PresenceAction> = channel.presenceChangeFlow()
-                channel.subscribe()
 
-                statusFlow.collect {
-                    withContext(Dispatchers.Main) {
-                        getUserStatus(getUser()?.id, mainActivity)
-                    }
+
+
+    // track the user status
+    fun trackUserStatus(context: Context) {
+        val userId = getUser()?.id
+        if (context is AppCompatActivity) {
+            context.lifecycle.addObserver(object : DefaultLifecycleObserver{
+                override fun onResume(owner: LifecycleOwner) {
+                    updateUserStatus(userId, true, context)
+                    super.onResume(owner)
                 }
+
+                override fun onStop(owner: LifecycleOwner) {
+                    updateUserStatus(userId, false, context)
+                    super.onStop(owner)
+                }
+            })
+
+            try {
+                getUserStatus(getUser()?.id, context)
             } catch (e: Exception) {
                 println("Error tracking user status: $e")
             }
         }
     }
-    private fun getUserStatus(userId: String?, context: MainActivity) {
-        context.lifecycle.addObserver(object : DefaultLifecycleObserver{
-            override fun onResume(owner: LifecycleOwner) {
-                updateUserStatus(userId, true, context)
-                super.onResume(owner)
+    private fun getUserStatus(userId: String?, context: Context) {
+        if (context is AppCompatActivity) {
+            context.lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    val response = async {
+                        supabase.from("user_status")
+                            .select{
+                                filter {
+                                    UserStatus::id eq userId
+                                }
+                            }
+                            .decodeList<UserStatus>()
+                    }
+                    val result = response.await()
+                    if (result.isEmpty()) {
+                        createUserStatus(userId, context)
+                    }
+                } catch (exception: Exception) {
+                    println("ERROR GETTING STATUS: $exception")
+                }
             }
+        }
+    }
+    private fun createUserStatus(userId: String?, context: Context) {
+        val userStatus = UserStatus(id = userId, true)
+        if (context is AppCompatActivity) {
+            context.lifecycleScope.launch(Dispatchers.IO) {
+                val insertUserStatus = async {
+                    supabase
+                        .from("user_status")
+                        .insert(listOf(userStatus))
+                }
 
-            override fun onStop(owner: LifecycleOwner) {
-                updateUserStatus(userId, false, context)
-                super.onStop(owner)
+                val insertData = insertUserStatus.await()
+                if (insertData.headers.isEmpty()) {
+                    println("Error inserting user status: ${insertData.data}")
+                } else {
+                    println("User status added successfully")
+                }
             }
-        })
-
-        context.lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                val response = async {
-                    supabase.from("user_status")
-                        .select{
+        }
+    }
+    private fun updateUserStatus(userId: String?, online: Boolean, context: Context) {
+        if (context is AppCompatActivity) {
+            context.lifecycleScope.launch(Dispatchers.IO) {
+                val updateResult = async {
+                    supabase
+                        .from("user_status")
+                        .update(
+                            {
+                                UserStatus::online setTo online
+                            }
+                        ) {
                             filter {
                                 UserStatus::id eq userId
                             }
                         }
-                        .decodeList<UserStatus>()
                 }
-                val result = response.await()
-                if (result.isEmpty()) { createUserStatus(userId, context) } else { updateUserStatus(userId, true, context) }
-            } catch (exception: Exception) {
-                println("ERROR GETTING STATUS: $exception")
-            }
-        }
-    }
-    private fun createUserStatus(userId: String?, context: MainActivity) {
-        val userStatus = UserStatus(id = userId, true)
-        context.lifecycleScope.launch(Dispatchers.IO) {
-            val insertUserStatus = async {
-                supabase
-                    .from("user_status")
-                    .insert(listOf(userStatus))
-            }
 
-            val insertData = insertUserStatus.await()
-            if (insertData.headers.isEmpty()) {
-                println("Error inserting user status: ${insertData.data}")
-            } else {
-                println("User status added successfully")
+                val updateData = updateResult.await()
+                println("User status updated successfully: ${updateData.data}")
             }
         }
     }
-    private fun updateUserStatus(userId: String?, online: Boolean, context: MainActivity) {
-        context.lifecycleScope.launch(Dispatchers.IO) {
-            val updateResult = async {
-                supabase
-                    .from("user_status")
-                    .update(
-                        {
-                            UserStatus::online setTo online
+    fun isOnline(context: Context) {
+
+        if (context is AppCompatActivity) {
+            val senderId = context.intent.getStringExtra("senderId")
+            context.lifecycleScope.launch(Dispatchers.IO) {
+                if (connectivity.isNetworkAvailable(context)) {
+
+                    try {
+                        val channel = supabase.realtime.channel("public:user_status")
+                        val productChangeFlow = channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
+                            table = "user_status"
+                            filter("id", FilterOperator.EQ, senderId!!)
                         }
-                    ) {
-                        filter {
-                            UserStatus::id eq userId
+                        channel.subscribe()
+
+                        productChangeFlow.collect { userStatus ->
+                            val chatData = userStatus.decodeRecord<UserStatus>()
+
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(context, "User live status ${chatData.online}", Toast.LENGTH_LONG).show()
+                                val onlineIcon = context.findViewById<RelativeLayout>(R.id.online_icon)
+                                if (chatData.online) {
+                                    onlineIcon.visibility = View.VISIBLE
+                                } else {
+                                    onlineIcon.visibility = View.GONE
+                                }
+                            }
                         }
+                    } catch (e: Exception) {
+                        println("\n\nAN ERROR CONNECTING TO STATUS THE WEBSOCKET: $e")
                     }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Cannot fetch live message", Toast.LENGTH_LONG).show()
+                    }
+                }
             }
-
-            val updateData = updateResult.await()
-            println("User status updated successfully: ${updateData.data}")
         }
     }
+
+
 
 
     //<---- send the messages ---->
@@ -304,6 +349,7 @@ class SupaBase {
         val senderId = context.intent.getStringExtra("senderId")
         val user = getUser() // get the authenticated user id
 
+
         context.lifecycleScope.launch {
             withContext(Dispatchers.Main) {
                 // show the progress bar
@@ -311,6 +357,9 @@ class SupaBase {
             }
 
             if (connectivity.isNetworkAvailable(context)) {
+//                val online = isOnline(senderId, context)
+//                println("THE USER STATUS: $online")
+
                 try {
                     val result = async {
                         supabase.from("message")
@@ -351,6 +400,7 @@ class SupaBase {
                         progressBar.visibility = ProgressBar.GONE
 
                         context.chatAdapter = adapter
+//                        if (online) onlineIcon.visibility = View.VISIBLE else onlineIcon.visibility = View.GONE
                     }
                 } catch (e: Exception) {
                     println(e.stackTrace)
