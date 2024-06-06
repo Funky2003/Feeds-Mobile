@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:padding="8dp">
 
 
@@ -9,9 +10,17 @@
         android:id="@+id/chats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/chat_bubble_background"
+        android:background="@drawable/chat_bubble_background_sent"
         android:padding="8dp"
         android:text="Hello funky, how are you doing today?"
         android:textAlignment="textStart"
         android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/time_sent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/chats"
+        android:text="3 secs"
+        android:textColor="@color/hint_grey_color" />
 </RelativeLayout>

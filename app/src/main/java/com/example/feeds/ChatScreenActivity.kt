@@ -25,7 +25,6 @@ class ChatScreen : AppCompatActivity() {
             insets
         }
 
-
         // subscribe to incoming messages
         supaBase.subscribeToIncomingMessages(this)
 
