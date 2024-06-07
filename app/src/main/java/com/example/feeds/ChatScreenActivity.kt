@@ -33,13 +33,11 @@ class ChatScreen : AppCompatActivity() {
         setUsernameAndAvatar()
 
         // get the user's live status
-        supaBase.isOnline(this)
+        supaBase.observeUserStatus(this)
 
         // call the recycler
-        supaBase.setRecyclerView(this)
+        supaBase.setRecyclerView(this@ChatScreen)
     }
-
-
 
     private fun setUsernameAndAvatar() {
         val name = intent.getStringExtra("username")

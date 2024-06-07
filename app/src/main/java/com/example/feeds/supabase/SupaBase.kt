@@ -39,16 +39,14 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.filter.FilterOperator
 import io.github.jan.supabase.postgrest.result.PostgrestResult
 import io.github.jan.supabase.realtime.PostgresAction
-import io.github.jan.supabase.realtime.PresenceAction
 import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.decodeRecord
 import io.github.jan.supabase.realtime.postgresChangeFlow
-import io.github.jan.supabase.realtime.presenceChangeFlow
 import io.github.jan.supabase.realtime.realtime
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -67,7 +65,7 @@ val supabase = createSupabaseClient(
 class SupaBase {
     private val connectivity: Connectivity = Connectivity()
     private val sharedPreferences = SharedPreferences()
-    fun getUser() : UserInfo? {
+    fun getUser(): UserInfo? {
         var user: UserInfo?
 
         runBlocking {
@@ -90,12 +88,20 @@ class SupaBase {
                 val profileDTO = ProfileDTO(response.id, user.getUsername())
                 addUserName(view = view, profileDTO = profileDTO)
                 sharedPreferences.showSuccessGifState(view.context, false)
-                Toast.makeText(view.context, "Account created!\nConfirm your email 📧", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    view.context,
+                    "Account created!\nConfirm your email 📧",
+                    Toast.LENGTH_LONG
+                ).show()
             } else {
                 throw Exception("Sign-up failed: No user ID returned.")
             }
         } catch (e: Exception) {
-            Toast.makeText(view.context, "Cannot register account, try again later.", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                view.context,
+                "Cannot register account, try again later.",
+                Toast.LENGTH_LONG
+            ).show()
             println("AN ERROR OCCURRED: $e")
         }
     }
@@ -104,6 +110,7 @@ class SupaBase {
             val response: PostgrestResult = supabase.from("profiles")
                 .insert(listOf(profileDTO))
             sharedPreferences.saveLoginState(view = view, loggedIn = true) // save the login state
+            updateUserStatus(getUser()?.id, true, view.context)
             println("INSERTED DATA: ${response.data}")
         } catch (e: Exception) {
             println("AN ERROR OCCURRED DURING PROFILE INSERTION: $e")
@@ -118,6 +125,7 @@ class SupaBase {
             password = loginDTO.getPassword()
         }
         Toast.makeText(view.context, "Login successful!", Toast.LENGTH_LONG).show()
+        updateUserStatus(getUser()?.id, true, view.context)
         sharedPreferences.saveLoginState(view = view, loggedIn = true) // save the login state
         sharedPreferences.showSuccessGifState(view.context, true)
     }
@@ -162,12 +170,20 @@ class SupaBase {
                 } catch (e: Exception) {
                     println(e.stackTrace)
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(appContext, "Failed to fetch data. Check your internet connection.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            appContext,
+                            "Failed to fetch data. Check your internet connection.",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
             } else {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(appContext, "No internet connection available.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        appContext,
+                        "No internet connection available.",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }
@@ -182,9 +198,10 @@ class SupaBase {
 
                 try {
                     val channel = supabase.realtime.channel("public:message")
-                    val productChangeFlow = channel.postgresChangeFlow<PostgresAction.Insert>(schema = "public") {
-                        table = "message"
-                    }
+                    val productChangeFlow =
+                        channel.postgresChangeFlow<PostgresAction.Insert>(schema = "public") {
+                            table = "message"
+                        }
                     channel.subscribe()
 
                     productChangeFlow.collect { message ->
@@ -192,7 +209,8 @@ class SupaBase {
 
                         withContext(Dispatchers.Main) {
                             context.chatAdapter?.messages?.add(chatData)
-                            context.findViewById<RecyclerView>(R.id.chat_recyclerview).scrollToPosition(context.chatAdapter?.itemCount?.minus(1) ?: 0)
+                            context.findViewById<RecyclerView>(R.id.chat_recyclerview)
+                                .scrollToPosition(context.chatAdapter?.itemCount?.minus(1) ?: 0)
                         }
                     }
                 } catch (e: Exception) {
@@ -200,45 +218,22 @@ class SupaBase {
                 }
             } else {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Cannot print the live message", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Cannot print the live message", Toast.LENGTH_LONG)
+                        .show()
                 }
             }
         }
     }
-
-
 
 
     // track the user status
-    fun trackUserStatus(context: Context) {
-        val userId = getUser()?.id
-        if (context is AppCompatActivity) {
-            context.lifecycle.addObserver(object : DefaultLifecycleObserver{
-                override fun onResume(owner: LifecycleOwner) {
-                    updateUserStatus(userId, true, context)
-                    super.onResume(owner)
-                }
-
-                override fun onStop(owner: LifecycleOwner) {
-                    updateUserStatus(userId, false, context)
-                    super.onStop(owner)
-                }
-            })
-
-            try {
-                getUserStatus(getUser()?.id, context)
-            } catch (e: Exception) {
-                println("Error tracking user status: $e")
-            }
-        }
-    }
-    private fun getUserStatus(userId: String?, context: Context) {
+    fun getUserStatus(userId: String?, context: Context) {
         if (context is AppCompatActivity) {
             context.lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     val response = async {
                         supabase.from("user_status")
-                            .select{
+                            .select {
                                 filter {
                                     UserStatus::id eq userId
                                 }
@@ -274,54 +269,63 @@ class SupaBase {
             }
         }
     }
-    private fun updateUserStatus(userId: String?, online: Boolean, context: Context) {
-        if (context is AppCompatActivity) {
-            context.lifecycleScope.launch(Dispatchers.IO) {
-                val updateResult = async {
-                    supabase
-                        .from("user_status")
-                        .update(
-                            {
-                                UserStatus::online setTo online
-                            }
-                        ) {
-                            filter {
-                                UserStatus::id eq userId
-                            }
-                        }
+    fun updateUserStatus(userId: String?, online: Boolean, context: Context) {
+
+        val coroutineScope = CoroutineScope(Dispatchers.IO)
+            coroutineScope.launch(Dispatchers.IO) {
+                if (getUser()?.id == null) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "User not authenticated!", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    return@launch // exit the coroutine
                 }
 
-                val updateData = updateResult.await()
-                println("User status updated successfully: ${updateData.data}")
+                try {
+                    val updateResult = async {
+                        supabase
+                            .from("user_status")
+                            .update(
+                                {
+                                    UserStatus::online setTo online
+                                }
+                            ) {
+                                filter {
+                                    UserStatus::id eq userId
+                                }
+                            }
+                    }
+
+                    val updateData = updateResult.await()
+                    println("User status updated successfully: ${updateData.data}")
+                } catch (e: Exception) { println("\n\nERROR UPDATING USER: $e\n\n")
             }
         }
     }
-    fun isOnline(context: Context) {
-
+    fun observeUserStatus(context: Context) {
         if (context is AppCompatActivity) {
             val senderId = context.intent.getStringExtra("senderId")
             context.lifecycleScope.launch(Dispatchers.IO) {
                 if (connectivity.isNetworkAvailable(context)) {
-
                     try {
+                        // Subscribe to real-time updates
                         val channel = supabase.realtime.channel("public:user_status")
-                        val productChangeFlow = channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
-                            table = "user_status"
-                            filter("id", FilterOperator.EQ, senderId!!)
-                        }
+                        val userStatusFlow =
+                            channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
+                                table = "user_status"
+                                filter("id", FilterOperator.EQ, senderId!!)
+                            }
                         channel.subscribe()
 
-                        productChangeFlow.collect { userStatus ->
+                        userStatusFlow.collect { userStatus ->
                             val chatData = userStatus.decodeRecord<UserStatus>()
-
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(context, "User live status ${chatData.online}", Toast.LENGTH_LONG).show()
-                                val onlineIcon = context.findViewById<RelativeLayout>(R.id.online_icon)
-                                if (chatData.online) {
-                                    onlineIcon.visibility = View.VISIBLE
-                                } else {
-                                    onlineIcon.visibility = View.GONE
-                                }
+                                Toast.makeText(
+                                    context,
+                                    "User live status ${chatData.online}",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                updateOnlineIcon(context, chatData.online)
                             }
                         }
                     } catch (e: Exception) {
@@ -329,14 +333,23 @@ class SupaBase {
                     }
                 } else {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "Cannot fetch live message", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Cannot fetch live message", Toast.LENGTH_LONG)
+                            .show()
                     }
                 }
             }
         }
     }
-
-
+    private fun updateOnlineIcon(context: Context, isOnline: Boolean) {
+        if (context is AppCompatActivity) {
+            val onlineIcon = context.findViewById<RelativeLayout>(R.id.online_icon)
+            if (isOnline) {
+                onlineIcon.visibility = View.VISIBLE
+            } else {
+                onlineIcon.visibility = View.GONE
+            }
+        }
+    }
 
 
     //<---- send the messages ---->
@@ -357,13 +370,20 @@ class SupaBase {
             }
 
             if (connectivity.isNetworkAvailable(context)) {
-//                val online = isOnline(senderId, context)
-//                println("THE USER STATUS: $online")
 
                 try {
+                    // Fetch initial user status
+                    val initialStatus = supabase.from("user_status")
+                        .select { filter { UserStatus::id eq senderId } }
+                        .decodeSingleOrNull<UserStatus>()
+
+                    withContext(Dispatchers.Main) {
+                        updateOnlineIcon(context, initialStatus?.online ?: false)
+                    }
+
                     val result = async {
                         supabase.from("message")
-                            .select{
+                            .select {
                                 filter {
                                     or {
                                         and {
@@ -400,14 +420,14 @@ class SupaBase {
                         progressBar.visibility = ProgressBar.GONE
 
                         context.chatAdapter = adapter
-//                        if (online) onlineIcon.visibility = View.VISIBLE else onlineIcon.visibility = View.GONE
                     }
                 } catch (e: Exception) {
                     println(e.stackTrace)
                 }
             } else {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "No internet connection available.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "No internet connection available.", Toast.LENGTH_LONG)
+                        .show()
                 }
             }
         }
@@ -426,7 +446,8 @@ class SupaBase {
         context.lifecycleScope.launch {
             if (!connectivity.isNetworkAvailable(context)) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "No internet connection available.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "No internet connection available.", Toast.LENGTH_LONG)
+                        .show()
                 }
             }
 
