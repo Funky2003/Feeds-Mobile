@@ -5,6 +5,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.feeds.notifications.FeedsNotification
 import com.example.feeds.supabase.SupaBase
 import kotlinx.coroutines.runBlocking
 
@@ -25,8 +26,9 @@ class MainActivity : AppCompatActivity() {
         // show the users
         showUsers()
 
-        // track user status
-//         supaBase.trackUserStatus(this)
+        // send notification
+//        val notification = FeedsNotification(this@MainActivity)
+//        notification.sendNotification(12345)
     }
 
     @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.")

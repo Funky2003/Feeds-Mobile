@@ -26,6 +26,7 @@ import com.example.feeds.models.ItemsViewModel
 import com.example.feeds.models.MessageModel
 import com.example.feeds.models.UserStatus
 import com.example.feeds.network.Connectivity
+import com.example.feeds.notifications.FeedsNotification
 import com.example.feeds.sharedpreferences.SharedPreferences
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.Auth
@@ -144,14 +145,15 @@ class SupaBase {
                     val result = async {
                         supabase.from("profiles")
                             .select()
-                            .decodeAs<ArrayList<MessageModel>>()
+                            .decodeAsOrNull<ArrayList<MessageModel>>()
                     }
-                    output = result.await()
+                    output = result.await()!!
 
                     // Convert fetched data to ItemsViewModel list
+                    val defaultProfileUrl = "https://kwaooqbghotsbltzpipn.supabase.co/storage/v1/object/public/images/user_icon_symbol.jpg?t=2024-06-07T09%3A47%3A47.804Z"
                     val data = output.map {
                         ItemsViewModel(
-                            profileAvatar = R.drawable.funky_avatar,
+                            profileAvatar = if (it.profile_avatar_url.isEmpty()) defaultProfileUrl else { it.profile_avatar_url },
                             unreadChatCount = 4,
                             username = it.username,
                             textMessage = it.username,
@@ -170,9 +172,13 @@ class SupaBase {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(
                             appContext,
-                            "Failed to fetch data. Check your internet connection.",
+                            "Failed to fetch data. Try again.",
                             Toast.LENGTH_LONG
                         ).show()
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        progressBar.visibility = ProgressBar.GONE
                     }
                 }
             } else {

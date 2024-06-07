@@ -38,6 +38,9 @@ android {
 
 //noinspection UseTomlInstead
 dependencies {
+    // fetch online image with coil implementation
+    implementation(group = "com.github.bumptech.glide", name = "glide", version = "5.0.0-rc01")
+
     // data store
     implementation(group = "pl.droidsonroids.gif", name = "android-gif-drawable", version = "1.2.28")
 

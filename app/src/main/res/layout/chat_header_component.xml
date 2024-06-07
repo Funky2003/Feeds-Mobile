@@ -16,12 +16,13 @@
             android:id="@+id/header_avatar"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/funky_avatar"
+            android:padding="1dp"
             android:background="@drawable/user_profile_round_border_background"
-            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/funky_avatar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <RelativeLayout
             android:id="@+id/online_icon"
@@ -43,6 +44,7 @@
         style="@style/TextAppearance.Material3.BodyLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:text="Funky"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white" />
 </LinearLayout>

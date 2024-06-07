@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:background="@color/background_color">
+    android:background="@drawable/chat_screen_background">
 
     <!-- the chat header component -->
     <include layout="@layout/chat_header_component" android:id="@+id/header"/>

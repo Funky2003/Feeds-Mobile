@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ItemsViewModel(
-    val profileAvatar: Int,
+    val profileAvatar: String,
     val unreadChatCount: Int,
     val username: String,
     val textMessage: String,

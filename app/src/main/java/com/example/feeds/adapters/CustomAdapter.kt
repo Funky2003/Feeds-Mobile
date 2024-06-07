@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.feeds.ChatScreen
 import com.example.feeds.R
 import com.example.feeds.models.ItemsViewModel
@@ -20,7 +21,14 @@ class CustomAdapter(private val mList: List<ItemsViewModel>, private val context
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val itemsViewModel = mList[position]
-        holder.profileAvatar.setImageResource(itemsViewModel.profileAvatar)
+
+        // load the profile image from the web
+        Glide.with(holder.itemView.context)
+            .load(itemsViewModel.profileAvatar)
+            .placeholder(R.drawable.user_icon_symbol)
+            .error(R.drawable.user_icon_symbol)
+            .into(holder.profileAvatar)
+
         holder.unreadChatCount.text = itemsViewModel.unreadChatCount.toString()
         holder.username.text = itemsViewModel.username
         holder.textMessage.text = itemsViewModel.textMessage
@@ -28,6 +36,7 @@ class CustomAdapter(private val mList: List<ItemsViewModel>, private val context
 
         holder.itemView.setOnClickListener {
             val chatIntent = Intent(context, ChatScreen::class.java)
+            chatIntent.putExtra("profile", itemsViewModel.profileAvatar)
             chatIntent.putExtra("senderId", itemsViewModel.senderId)
             chatIntent.putExtra("header_user_name", itemsViewModel.username)
             context.startActivity(chatIntent)

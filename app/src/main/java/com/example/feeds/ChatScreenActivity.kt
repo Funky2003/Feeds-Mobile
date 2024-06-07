@@ -8,9 +8,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.bumptech.glide.Glide
 import com.example.feeds.adapters.ChatAdapter
 import com.example.feeds.supabase.SupaBase
-import kotlinx.coroutines.runBlocking
 
 class ChatScreen : AppCompatActivity() {
     private val supaBase = SupaBase()
@@ -41,14 +41,19 @@ class ChatScreen : AppCompatActivity() {
 
     private fun setUsernameAndAvatar() {
         val name = intent.getStringExtra("username")
-        val profile = intent.getIntExtra("profile", 0)
+        val profileUrl = intent.getStringExtra("profile")
 
         val nUsername = findViewById<TextView>(R.id.header_username)
         val profileAvatar = findViewById<ImageView>(R.id.header_avatar)
-
         nUsername.text = name
-        profileAvatar.setImageResource(profile)
+
+        try {
+            Glide.with(applicationContext).load(profileUrl).into(profileAvatar)
+        } catch (exception: Exception) {
+            profileAvatar.setImageResource(R.drawable.user_icon_symbol)
+        }
     }
+
     fun sendMessage(view: View) {
         supaBase.sendMessage(this@ChatScreen)
     }
