@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ArithmeticOperationsActivity">
+
+    <LinearLayout
+        android:id="@+id/lin_layout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/lin_layout1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_marginBottom="18dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="ARITHMETICS"
+            android:textColor="@color/background_color"
+            android:textSize="35sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/hint_grey_color"
+            app:cursorColor="@color/background_color"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/num1_editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/search_bar_background"
+                android:cursorVisible="true"
+                android:gravity="top"
+                android:hint="First number"
+                android:inputType="number"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textColorHint="@color/hint_grey_color"
+                android:textStyle="normal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:textColorHint="@color/hint_grey_color"
+            app:cursorColor="@color/background_color"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/num2_editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/search_bar_background"
+                android:cursorVisible="true"
+                android:gravity="top"
+                android:hint="Second number"
+                android:inputType="number"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textColorHint="@color/hint_grey_color"
+                android:textStyle="normal" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lin_layout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/lin_layout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lin_layout3">
+
+        <ImageButton
+            android:id="@+id/add_num_btn"
+            android:onClick="addNum"
+            android:padding="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/arithmetic_background"
+            android:src="@drawable/addition_box" />
+
+        <ImageButton
+            android:id="@+id/sub_num_btn"
+            android:onClick="subtractNum"
+            android:padding="4dp"
+            android:layout_marginStart="14dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/arithmetic_background"
+            android:src="@drawable/subtraction_box" />
+
+        <ImageButton
+            android:id="@+id/multi_num_btn"
+            android:onClick="multiplyNum"
+            android:padding="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:background="@drawable/arithmetic_background"
+            android:src="@drawable/multiplication_box" />
+
+        <ImageButton
+            android:id="@+id/mod_num_btn"
+            android:onClick="moduloNum"
+            android:padding="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/arithmetic_background"
+            android:src="@drawable/modulo_box" />
+
+        <ImageButton
+            android:id="@+id/div_num_btn"
+            android:onClick="divideNum"
+            android:padding="4dp"
+            android:layout_marginStart="14dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/arithmetic_background"
+            android:src="@drawable/division_box" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lin_layout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/arithmetic_background"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lin_layout1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="RESULT"
+            android:textColor="@color/white"
+            android:textSize="35sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/txt_math_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="24dp"
+            android:text="RESULT"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:textStyle="normal" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

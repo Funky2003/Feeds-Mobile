@@ -26,7 +26,6 @@ import com.example.feeds.models.ItemsViewModel
 import com.example.feeds.models.MessageModel
 import com.example.feeds.models.UserStatus
 import com.example.feeds.network.Connectivity
-import com.example.feeds.notifications.FeedsNotification
 import com.example.feeds.sharedpreferences.SharedPreferences
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.Auth
@@ -277,32 +276,40 @@ class SupaBase {
 
         val coroutineScope = CoroutineScope(Dispatchers.IO)
             coroutineScope.launch(Dispatchers.IO) {
-                if (getUser()?.id == null) {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "User not authenticated!", Toast.LENGTH_SHORT)
-                            .show()
+                if (connectivity.isNetworkAvailable(context)) {
+                    if (getUser()?.id == null) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, "User not authenticated!", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                        return@launch // exit the coroutine
                     }
-                    return@launch // exit the coroutine
+
+                    try {
+                        val updateResult = async {
+                            supabase
+                                .from("user_status")
+                                .update(
+                                    {
+                                        UserStatus::online setTo online
+                                    }
+                                ) {
+                                    filter {
+                                        UserStatus::id eq userId
+                                    }
+                                }
+                        }
+
+                        val updateData = updateResult.await()
+                        println("User status updated successfully: ${updateData.data}")
+                    } catch (e: Exception) {
+                        println("\n\nERROR UPDATING USER: $e\n\n")
+                    }
                 }
-
-                try {
-                    val updateResult = async {
-                        supabase
-                            .from("user_status")
-                            .update(
-                                {
-                                    UserStatus::online setTo online
-                                }
-                            ) {
-                                filter {
-                                    UserStatus::id eq userId
-                                }
-                            }
-                    }
-
-                    val updateData = updateResult.await()
-                    println("User status updated successfully: ${updateData.data}")
-                } catch (e: Exception) { println("\n\nERROR UPDATING USER: $e\n\n")
+            else {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "No internet available", Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
