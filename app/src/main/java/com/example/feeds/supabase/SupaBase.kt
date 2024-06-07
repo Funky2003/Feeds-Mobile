@@ -8,8 +8,6 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -318,14 +316,22 @@ class SupaBase {
                         channel.subscribe()
 
                         userStatusFlow.collect { userStatus ->
-                            val chatData = userStatus.decodeRecord<UserStatus>()
+                            val status = userStatus.decodeRecord<UserStatus>()
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(
-                                    context,
-                                    "User live status ${chatData.online}",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                updateOnlineIcon(context, chatData.online)
+                                updateOnlineIcon(context, status.online)
+                                if (status.online) {
+                                    Toast.makeText(
+                                        context,
+                                        "User online",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "User offline",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
                             }
                         }
                     } catch (e: Exception) {

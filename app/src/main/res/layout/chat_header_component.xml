@@ -17,6 +17,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/funky_avatar"
+            android:background="@drawable/user_profile_round_border_background"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
